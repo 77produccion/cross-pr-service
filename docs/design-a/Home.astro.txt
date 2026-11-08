@@ -1,0 +1,104 @@
+---
+import ProjectImage from '@/components/ui/ProjectImage.astro';
+import Action from '@/components/ui/Action.astro';
+import HomeServices from './HomeServices.astro';
+import HomeWork from './HomeWork.astro';
+import FinalCTA from './FinalCTA.astro';
+---
+
+<section class="hero-a">
+  <div class="hero-a-copy">
+    <p class="kicker">Central Texas · Residential &amp; commercial</p>
+    <h1 class="hero-a-title">
+      <span class="hero-line">
+        <span>Painting &amp;</span>
+      </span>
+      <span class="hero-line">
+        <span>remodeling in</span>
+      </span>
+      <span class="hero-line hero-line-place">
+        <span>Austin &amp; San Antonio</span>
+      </span>
+    </h1>
+    <div class="hero-a-lede">
+      <slot />
+    </div>
+    <div class="hero-a-actions">
+      <Action />
+      <a class="text-link" href="/our-work/">
+        See our work
+      </a>
+    </div>
+    <dl class="hero-a-facts">
+      <div>
+        <dt>Experience</dt>
+        <dd>More than 10 years</dd>
+      </div>
+      <div>
+        <dt>Projects</dt>
+        <dd>Residential &amp; commercial</dd>
+      </div>
+      <div>
+        <dt>Area</dt>
+        <dd>Austin &amp; San Antonio</dd>
+      </div>
+    </dl>
+  </div>
+  <div class="hero-a-media image-frame" data-hero-media>
+    <ProjectImage
+      id="cps-007"
+      sizes="(max-width: 900px) 100vw, 52vw"
+      priority
+    />
+  </div>
+</section>
+<HomeServices />
+<section class="about-a">
+  <div class="container about-a-grid">
+    <div class="about-a-media image-frame" data-parallax data-reveal>
+      <ProjectImage id="cps-009" sizes="(max-width: 850px) 100vw, 45vw" />
+    </div>
+    <div class="about-a-copy" data-reveal>
+      <p class="kicker kicker-light">About Cross Pro</p>
+      <h2>Ten years in the trade.</h2>
+      <p>
+        With more than 10 years of experience, Cross Pro Services is committed
+        to delivering professional results and work that exceeds our clients’
+        expectations.
+      </p>
+      <ul class="about-a-list">
+        <li>Residential &amp; commercial</li>
+        <li>Painting &amp; remodeling</li>
+        <li>Serving Central Texas</li>
+      </ul>
+      <Action href="/about-us/" label="More about us" secondary />
+    </div>
+  </div>
+</section>
+<HomeWork />
+<section class="area-a">
+  <div class="container">
+    <div class="area-a-head">
+      <div>
+        <p class="kicker">Service area</p>
+        <h2>
+          Central Texas,
+          <br />
+          close to home.
+        </h2>
+      </div>
+      <p>
+        Painting and remodeling for homes and businesses across the Austin and
+        San Antonio metros.
+      </p>
+    </div>
+    <div class="area-a-links">
+      <a href="/contact/">Austin</a>
+      <a href="/contact/">San Antonio</a>
+    </div>
+    <p class="area-a-note">And surrounding communities.</p>
+  </div>
+</section>
+<div class="container">
+  <FinalCTA />
+</div>

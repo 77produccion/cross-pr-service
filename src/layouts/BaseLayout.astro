@@ -1,0 +1,39 @@
+---
+import { site } from '@/config/site';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import '@/styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  page?: string;
+}
+const { title, description, page } = Astro.props;
+---
+
+<!doctype html>
+<html lang={site.language}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{site.name} | {title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#242622" />
+    {site.noindex && <meta name="robots" content="noindex, nofollow" />}
+  </head>
+  <body class={page ? `page-${page}` : undefined}>
+    <a class="skip-link" href="#main">
+      Skip to content
+    </a>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import '@/scripts/motion';
+      import '@/scripts/interactions';
+    </script>
+  </body>
+</html>

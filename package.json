@@ -1,0 +1,35 @@
+{
+  "name": "cross-pro-services",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0 <25"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test:e2e": "playwright test",
+    "photos:prepare": "node scripts/prepare-photos.mjs && prettier --write src/data/photos.json docs/assets/photo-catalog.json",
+    "test:assets": "node --test tests/assets/*.test.mjs",
+    "validate": "npm run check && npm run format:check && npm run test:assets && npm run build && npm run test:e2e"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^8.1.3",
+    "astro": "^7.4.7",
+    "gsap": "^3.15.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@playwright/test": "^1.65.0",
+    "@types/node": "^26.6.6",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.2",
+    "sharp": "^0.35.5",
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,76 @@
+---
+import ProjectImage from '@/components/ui/ProjectImage.astro';
+import photos from '@/data/photos.json';
+import { projects } from '@/config/projects';
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+const visible = compact ? projects.slice(0, 3) : projects;
+const sources = visible.map(
+  (project) =>
+    photos
+      .find((photo) => photo.id === project.image)!
+      .variants.filter((variant) => variant.format === 'jpeg')
+      .at(-1)!.src,
+);
+---
+
+<div data-gallery>
+  {!compact && (
+    <div class="gallery-filters" aria-label="Filter project photos" hidden>
+      {['All', 'Interiors', 'Exteriors', 'Cabinets'].map((category) => (
+        <button
+          type="button"
+          data-filter={category}
+          aria-pressed={category === 'All'}
+        >
+          {category}
+        </button>
+      ))}
+    </div>
+  )}
+  <div class="project-grid">
+    {visible.map((project, index) => (
+      <figure class="project-card" data-category={project.category} data-reveal>
+        <a
+          class="image-frame"
+          href={sources[index]}
+          data-project-image
+          data-title={project.title}
+          data-alt={project.alt}
+          aria-label={`Enlarge: ${project.title}`}
+        >
+          <ProjectImage
+            id={project.image}
+            alt={project.alt}
+            sizes="(max-width: 650px) 100vw, 33vw"
+          />
+        </a>
+        <figcaption>
+          <h3>{project.title}</h3>
+          <span>{project.category}</span>
+        </figcaption>
+      </figure>
+    ))}
+  </div>
+  <p class="gallery-status" aria-live="polite">
+    {visible.length} projects
+  </p>
+  <dialog class="lightbox" aria-label="Project photo viewer">
+    <button class="lightbox-close" type="button" aria-label="Close photo">
+      Close <span aria-hidden="true">×</span>
+    </button>
+    <img width="1600" height="1100" alt="" />
+    <p class="lightbox-caption" aria-live="polite"></p>
+    <div class="lightbox-controls">
+      <button type="button" data-previous-photo aria-label="Previous photo">
+        Previous
+      </button>
+      <span data-photo-position aria-live="polite"></span>
+      <button type="button" data-next-photo aria-label="Next photo">
+        Next
+      </button>
+    </div>
+  </dialog>
+</div>

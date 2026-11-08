@@ -1,0 +1,60 @@
+---
+import ProjectImage from '@/components/ui/ProjectImage.astro';
+import photos from '@/data/photos.json';
+
+interface Props {
+  images: readonly string[];
+  id: string;
+}
+const { images, id } = Astro.props;
+const selected = images.map((image) => {
+  const photo = photos.find((photo) => photo.id === image);
+  if (!photo) throw new Error(`Unknown showcase photo: ${image}`);
+  return photo;
+});
+---
+
+<div class="container about-c-grid" data-photo-switcher>
+  <div class="about-c-copy" data-reveal>
+    <slot />
+  </div>
+  <div
+    class="showcase-thumbnails"
+    role="group"
+    aria-label="Interior detail photographs"
+  >
+    {selected.map((photo, index) => (
+      <a
+        class="showcase-thumbnail image-frame"
+        href={
+          photo.variants.filter((variant) => variant.format === 'webp').at(-1)!
+            .src
+        }
+        aria-label={`View photo ${index + 1}: ${photo.alt}`}
+        aria-current={index === 0 ? 'true' : undefined}
+        aria-controls={id}
+        data-showcase-select={index}
+      >
+        <ProjectImage
+          id={photo.id}
+          sizes="(max-width: 900px) 22vw, 10vw"
+          alt=""
+        />
+      </a>
+    ))}
+  </div>
+  <p class="sr-only" role="status" data-showcase-status>
+    Photo 1 of {selected.length}
+  </p>
+  <div class="about-c-media image-frame" id={id} data-reveal>
+    {selected.map((photo, index) => (
+      <div
+        class:list={['showcase-photo', { 'is-active': index === 0 }]}
+        aria-hidden={index !== 0 ? 'true' : undefined}
+        data-showcase-photo={index}
+      >
+        <ProjectImage id={photo.id} sizes="(max-width: 900px) 90vw, 50vw" />
+      </div>
+    ))}
+  </div>
+</div>

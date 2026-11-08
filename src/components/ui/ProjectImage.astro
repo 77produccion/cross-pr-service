@@ -1,0 +1,48 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import photos from '@/data/photos.json';
+
+interface Props {
+  id: string;
+  /** Required: describe the actual layout width, not the device name. */
+  sizes: string;
+  alt?: string;
+  priority?: boolean;
+  class?: HTMLAttributes<'picture'>['class'];
+}
+
+const { id, sizes, alt, priority = false, class: className } = Astro.props;
+const photo = photos.find((image) => image.id === id);
+if (!photo) throw new Error(`Unknown photo ID: ${id}`);
+const webp = photo.variants.filter((variant) => variant.format === 'webp');
+const jpeg = photo.variants.filter((variant) => variant.format === 'jpeg');
+const fallback = jpeg.at(-1)!;
+const srcset = (variants: typeof photo.variants) =>
+  variants.map((variant) => `${variant.src} ${variant.width}w`).join(', ');
+---
+
+<picture class={className} data-photo-id={id}>
+  <source type="image/webp" srcset={srcset(webp)} sizes={sizes} />
+  <img
+    src={fallback.src}
+    srcset={srcset(jpeg)}
+    sizes={sizes}
+    width={photo.width}
+    height={photo.height}
+    alt={alt ?? photo.alt}
+    loading={priority ? 'eager' : 'lazy'}
+    fetchpriority={priority ? 'high' : 'auto'}
+    decoding="async"
+  />
+</picture>
+
+<style>
+  picture {
+    display: block;
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

@@ -1,0 +1,48 @@
+---
+import ProjectImage from '@/components/ui/ProjectImage.astro';
+import { services } from '@/config/projects';
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+const visible = compact ? [services[0], services[1], services[5]] : services;
+---
+
+<div class:list={['service-grid', { 'service-grid-full': !compact }]}>
+  {visible.map((service) => (
+    <article class="service-card" id={service.id} data-reveal>
+      <a
+        class="service-image image-frame"
+        href={
+          compact
+            ? `/services/#${service.id}`
+            : `/contact/?service=${service.id}`
+        }
+        aria-label={`${compact ? 'Explore' : 'Request an estimate for'} ${service.title}`}
+      >
+        <ProjectImage
+          id={service.image}
+          alt={service.alt}
+          sizes={
+            compact
+              ? '(max-width: 650px) 100vw, (max-width: 950px) 50vw, 33vw'
+              : '(max-width: 650px) 100vw, 50vw'
+          }
+        />
+      </a>
+      <div class="service-body">
+        <div class="card-heading">
+          {compact ? <h3>{service.title}</h3> : <h2>{service.title}</h2>}
+        </div>
+        {!compact && (
+          <>
+            <p>{service.description}</p>
+            <a class="text-link" href={`/contact/?service=${service.id}`}>
+              Request an Estimate
+            </a>
+          </>
+        )}
+      </div>
+    </article>
+  ))}
+</div>

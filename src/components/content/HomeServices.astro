@@ -1,0 +1,67 @@
+---
+import ProjectImage from '@/components/ui/ProjectImage.astro';
+import { services } from '@/config/projects';
+const visible = [services[0], services[1], services[5]];
+---
+
+<section class="services-c" id="services" data-service-stage>
+  <div class="container services-c-head" data-reveal>
+    <div>
+      <p class="kicker-c">Services</p>
+      <h2>What we do</h2>
+    </div>
+    <p>
+      From interior and exterior painting to drywall, cabinet projects and
+      exterior wood repairs.
+    </p>
+  </div>
+  <div class="container services-c-body">
+    <div class="services-c-media">
+      {visible.map((service, index) => (
+        <div
+          class:list={[
+            'services-c-image',
+            'image-frame',
+            { 'is-active': index === 0 },
+          ]}
+          data-service-image={index}
+        >
+          <ProjectImage
+            id={service.image}
+            alt={service.alt}
+            sizes="(max-width: 850px) 100vw, 45vw"
+          />
+        </div>
+      ))}
+      <span class="services-c-caption" data-service-caption>
+        {visible[0]!.title}
+      </span>
+    </div>
+    <div class="services-c-list">
+      {visible.map((service, index) => (
+        <article
+          class:list={['services-c-item', { 'is-active': index === 0 }]}
+          data-service-item={index}
+        >
+          <div class="services-c-card-media image-frame">
+            <ProjectImage
+              id={service.image}
+              alt={service.alt}
+              sizes="(max-width: 900px) 90vw, 1px"
+            />
+          </div>
+          <h3>{service.title}</h3>
+          <p>{service.description}</p>
+          <a class="text-link" href={`/contact/?service=${service.id}`}>
+            Request an estimate
+          </a>
+        </article>
+      ))}
+    </div>
+  </div>
+  <div class="container services-c-foot">
+    <a class="text-link" href="/services/">
+      View all services
+    </a>
+  </div>
+</section>

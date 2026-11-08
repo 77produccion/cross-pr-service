@@ -1,0 +1,19 @@
+---
+import Action from '@/components/ui/Action.astro';
+import ProjectImage from '@/components/ui/ProjectImage.astro';
+interface Props {
+  image: string;
+}
+const { image } = Astro.props;
+---
+
+<section class="final-cta final-cta-photo" data-reveal>
+  <div class="final-cta-media image-frame" aria-hidden="true">
+    <ProjectImage id={image} sizes="(max-width: 900px) 90vw, 86rem" alt="" />
+  </div>
+  <div class="final-cta-copy">
+    <h2>Ready to start your project?</h2>
+    <p>Tell us what you have in mind.</p>
+  </div>
+  <Action />
+</section>

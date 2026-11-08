@@ -1,0 +1,15 @@
+---
+import { services } from '@/config/projects';
+---
+
+<section class="service-index" aria-label="Browse our services">
+  <ol>
+    {services.map((service) => (
+      <li>
+        <a href={`#${service.id}`}>
+          <span>{service.title}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</section>

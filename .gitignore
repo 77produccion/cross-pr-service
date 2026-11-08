@@ -1,0 +1,21 @@
+node_modules/
+dist/
+.astro/
+.env
+.env.*
+!.env.example
+playwright-report/
+test-results/
+.DS_Store
+Thumbs.db
+
+# Client originals and internal source material stay local.
+/Contenido Web/
+/Logo/
+/*.pdf
+/docs/photo-contact-sheet.jpg
+/docs/photo-index.json
+
+# Local mirrors of the versioned .agents/skills directory.
+/.claude/
+/agent/

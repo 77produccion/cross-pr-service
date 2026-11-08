@@ -1,0 +1,44 @@
+---
+import { site } from '@/config/site';
+import Container from '@/components/ui/Container.astro';
+import { Image } from 'astro:assets';
+import logo from '@/assets/logo.webp';
+---
+
+<header class="site-header">
+  <Container>
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="main-navigation"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <a class="brand" href="/" aria-label={`${site.name} — Home`}>
+      <Image src={logo} alt={site.name} width={132} loading="eager" />
+    </a>
+    <nav id="main-navigation" aria-label="Main navigation">
+      <ul>
+        {site.navigation.map(({ label, href }) => (
+          <li>
+            <a
+              href={href}
+              aria-current={Astro.url.pathname === href ? 'page' : undefined}
+              data-astro-prefetch
+            >
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <a class="header-cta button" href="/contact/">
+      Get a Quote
+    </a>
+  </Container>
+  <div class="scroll-progress" aria-hidden="true"></div>
+</header>

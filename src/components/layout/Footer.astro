@@ -1,0 +1,35 @@
+---
+import { site } from '@/config/site';
+import Container from '@/components/ui/Container.astro';
+import { Image } from 'astro:assets';
+import logo from '@/assets/logo.webp';
+---
+
+<footer class="site-footer">
+  <Container>
+    <div class="footer-top">
+      <a class="footer-brand" href="/" aria-label={`${site.name} — Home`}>
+        <Image src={logo} alt={site.name} width={180} loading="lazy" />
+      </a>
+      <p>
+        Painting and remodeling in Austin, San Antonio
+        <br />
+        and surrounding communities.
+      </p>
+      <a class="text-link" href="/contact/">
+        Let’s talk about your project
+      </a>
+    </div>
+    <div class="footer-links">
+      {site.navigation.map((item) => (
+        <a href={item.href}>{item.label}</a>
+      ))}
+    </div>
+    <div class="footer-bottom">
+      <p>
+        © {new Date().getFullYear()} {site.name}
+      </p>
+      <p>Austin, San Antonio & surrounding communities.</p>
+    </div>
+  </Container>
+</footer>

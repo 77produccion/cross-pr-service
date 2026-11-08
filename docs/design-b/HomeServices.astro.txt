@@ -1,0 +1,47 @@
+---
+import ProjectImage from '@/components/ui/ProjectImage.astro';
+import { services } from '@/config/projects';
+const visible = [services[0], services[1], services[5]];
+---
+
+<section class="services-b" id="services">
+  <div class="container services-b-head" data-reveal>
+    <div>
+      <p class="kicker-b">Services</p>
+      <h2>What we do</h2>
+    </div>
+    <p>
+      From interior and exterior painting to drywall, cabinet projects and
+      exterior wood repairs.
+    </p>
+  </div>
+  <div class="container services-b-grid">
+    {visible.map((service) => (
+      <article class="service-b-card" data-reveal>
+        <a
+          class="service-b-media image-frame"
+          href={`/services/#${service.id}`}
+          aria-label={`Explore ${service.title}`}
+        >
+          <ProjectImage
+            id={service.image}
+            alt={service.alt}
+            sizes="(max-width: 850px) 100vw, 33vw"
+          />
+        </a>
+        <div class="service-b-body">
+          <h3>{service.title}</h3>
+          <p>{service.description}</p>
+          <a class="service-b-link" href={`/contact/?service=${service.id}`}>
+            Request an estimate
+          </a>
+        </div>
+      </article>
+    ))}
+  </div>
+  <div class="container services-b-foot">
+    <a class="button" href="/services/">
+      View all services
+    </a>
+  </div>
+</section>

@@ -1,0 +1,85 @@
+---
+import ProjectImage from '@/components/ui/ProjectImage.astro';
+import Action from '@/components/ui/Action.astro';
+import HomeServices from './HomeServices.astro';
+import HomeWork from './HomeWork.astro';
+import FinalCTA from './FinalCTA.astro';
+---
+
+<section class="hero-b">
+  <div class="hero-b-copy">
+    <p class="kicker-b">Austin · San Antonio</p>
+    <h1 class="hero-b-title">
+      <span>Painting &amp;</span>
+      <span>remodeling</span>
+      <span class="hero-b-place">In Austin &amp; San Antonio</span>
+    </h1>
+    <p class="hero-b-lede">
+      <slot />
+    </p>
+    <div class="hero-b-actions">
+      <Action />
+      <a class="hero-b-link" href="/our-work/">
+        See our work
+      </a>
+    </div>
+  </div>
+  <div class="hero-b-media image-frame">
+    <ProjectImage
+      id="cps-007"
+      sizes="(max-width: 900px) 100vw, 50vw"
+      priority
+    />
+  </div>
+  <div class="hero-b-strip">
+    <span>10+ years</span>
+    <span>Residential &amp; commercial</span>
+    <span>Austin &amp; San Antonio</span>
+  </div>
+</section>
+<HomeServices />
+<section class="about-b">
+  <div class="container about-b-grid">
+    <div class="about-b-media image-frame" data-parallax data-reveal>
+      <ProjectImage id="cps-009" sizes="(max-width: 850px) 100vw, 45vw" />
+    </div>
+    <div class="about-b-copy" data-reveal>
+      <p class="kicker-b">About Cross Pro</p>
+      <h2>The people behind the work.</h2>
+      <p>
+        With more than 10 years of experience, Cross Pro Services is committed
+        to delivering professional results and work that exceeds our clients’
+        expectations.
+      </p>
+      <div class="about-b-stat">
+        <strong>10+</strong>
+        <span>
+          Years in
+          <br />
+          the trade
+        </span>
+      </div>
+      <ul class="about-b-list">
+        <li>Residential &amp; commercial</li>
+        <li>Painting &amp; remodeling</li>
+        <li>Serving Central Texas</li>
+      </ul>
+      <Action href="/about-us/" label="More about us" secondary />
+    </div>
+  </div>
+</section>
+<HomeWork />
+<section class="area-b">
+  <div class="container">
+    <p class="kicker-b">Service area</p>
+    <h2>Central Texas</h2>
+    <div class="area-b-list">
+      <a href="/contact/">Austin</a>
+      <a href="/contact/">San Antonio</a>
+    </div>
+    <p class="area-b-note">And surrounding communities.</p>
+  </div>
+</section>
+<div class="container">
+  <FinalCTA />
+</div>

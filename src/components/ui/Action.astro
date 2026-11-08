@@ -1,0 +1,16 @@
+---
+interface Props {
+  href?: string;
+  label?: string;
+  secondary?: boolean;
+}
+const {
+  href = '/contact/',
+  label = 'Request an Estimate',
+  secondary = false,
+} = Astro.props;
+---
+
+<a class:list={['button', { 'button-secondary': secondary }]} href={href}>
+  <span>{label}</span>
+</a>

@@ -1,0 +1,41 @@
+---
+import ProjectImage from '@/components/ui/ProjectImage.astro';
+import { projects } from '@/config/projects';
+const visible = projects.slice(0, 5);
+---
+
+<section class="work-b">
+  <div class="container work-b-head" data-reveal>
+    <div>
+      <p class="kicker-b">Selected work</p>
+      <h2>Recent projects</h2>
+    </div>
+    <p>A selection of painting and remodeling work across Central Texas.</p>
+  </div>
+  <div class="container work-b-grid">
+    {visible.map((project, index) => (
+      <figure class={`work-b-item work-b-item-${index + 1}`} data-reveal>
+        <a
+          class="image-frame"
+          href="/our-work/"
+          aria-label={`View ${project.title} in Our Work`}
+        >
+          <ProjectImage
+            id={project.image}
+            alt={project.alt}
+            sizes="(max-width: 850px) 100vw, (max-width: 1100px) 50vw, 55vw"
+          />
+        </a>
+        <figcaption>
+          <span>{project.title}</span>
+          <span>{project.category}</span>
+        </figcaption>
+      </figure>
+    ))}
+  </div>
+  <div class="container work-b-foot">
+    <a class="work-b-all" href="/our-work/">
+      See all projects
+    </a>
+  </div>
+</section>

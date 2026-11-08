@@ -1,0 +1,12 @@
+node_modules
+dist
+.astro
+.agents
+.claude
+agent
+skills-lock.json
+package-lock.json
+Contenido Web
+Logo
+playwright-report
+test-results
