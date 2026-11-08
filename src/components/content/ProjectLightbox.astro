@@ -1,0 +1,84 @@
+---
+import type { projects as allProjects } from '@/config/projects';
+import { getPhoto } from '@/utils/photos';
+
+interface Props {
+  projects: typeof allProjects;
+}
+const { projects } = Astro.props;
+const data = projects.map((project) => ({
+  id: project.id,
+  title: project.title,
+  description: project.description,
+  photos: project.images.map((id) => {
+    const photo = getPhoto(id);
+    return {
+      id,
+      alt: photo.alt,
+      width: photo.width,
+      height: photo.height,
+      variants: photo.variants.map(({ src, width, format }) => ({
+        src,
+        width,
+        format,
+      })),
+    };
+  }),
+}));
+---
+
+<script
+  type="application/json"
+  data-gallery-projects
+  set:html={JSON.stringify(data).replaceAll('<', '\\u003c')}
+/>
+<dialog class="lightbox" aria-label="Project photo viewer">
+  <button class="lightbox-close" type="button" aria-label="Close photo">
+    <svg
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="m6 6 12 12M6 18 18 6"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+      />
+    </svg>
+  </button>
+  <div class="lightbox-content">
+    <div class="lightbox-stage" aria-busy="false">
+      {[0, 1].map(() => (
+        <picture class="lightbox-frame" aria-hidden="true">
+          <source type="image/webp" />
+          <img width="1600" height="1200" alt="" decoding="async" />
+        </picture>
+      ))}
+    </div>
+    <div class="lightbox-sidebar">
+      <div class="lightbox-copy">
+        <h2 data-project-title></h2>
+        <p data-project-description></p>
+      </div>
+      <p class="lightbox-caption" aria-live="polite"></p>
+      <div
+        class="lightbox-thumbnails"
+        role="group"
+        aria-label="Photos from this project"
+      ></div>
+      <p class="sr-only" role="status" data-photo-status></p>
+      <div class="lightbox-controls">
+        <button type="button" data-previous-photo aria-label="Previous photo">
+          Previous
+        </button>
+        <span data-photo-position aria-live="polite"></span>
+        <button type="button" data-next-photo aria-label="Next photo">
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+</dialog>

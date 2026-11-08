@@ -51,11 +51,11 @@ Ver `docs/architecture.md` para criterios de rendimiento y pendientes antes de p
 
 ## Fotografías
 
-55 originales catalogados con nombres descriptivos e IDs estables, derivados WebP/JPEG responsive y componente `ProjectImage.astro`. Ver `docs/images.md` y `docs/assets/photo-catalog.csv` para trazabilidad.
+La fuente vigente es `Contenido Web/fixed/`: sus **54 fotos corregidas se usan todas**, distribuidas en 24 grupos compartidos entre Home y Our Work. Se generan WebP/JPEG responsive y miniaturas de 240 px, con URLs versionadas por hash. `scripts/fixed-photo-sources.json` enumera todos los archivos activos y `scripts/project-groups.json` define sus agrupaciones, títulos y descripciones. La entrega original de 55 fotos se conserva archivada, sin utilizarla como respaldo visual. Ver `docs/images.md` para trazabilidad y pruebas.
 
-El repositorio incluye los derivados web, pero no los originales de `Contenido Web/`, el logo fuente de `Logo/` ni el PDF interno. `npm run build` funciona sin esos materiales. Para regenerar fotos o ejecutar la verificación de hashes de originales de `npm run test:assets` (incluida en `npm run validate`), es necesario disponer de la carpeta original local.
+El repositorio incluye los derivados web, pero no las fuentes de `Contenido Web/`, el logo fuente de `Logo/` ni el PDF interno. `npm run build` funciona sin esos materiales. Para regenerar fotos se necesita `Contenido Web/fixed/`; para verificar la conservación de ambas entregas mediante `npm run test:assets` (incluida en `npm run validate`), también se necesita `Contenido Web/Fotos/`.
 
 ```bash
-npm run photos:prepare # Regenerar derivados desde originales
+npm run photos:prepare # Regenerar derivados desde fixed, sin exclusiones
 npm run test:assets   # Verificar archivos, tamaños y hashes
 ```

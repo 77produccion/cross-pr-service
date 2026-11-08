@@ -1,4 +1,31 @@
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+
+const projectGroups = JSON.parse(
+  readFileSync(
+    new URL('../../scripts/project-groups.json', import.meta.url),
+    'utf8',
+  ),
+) as {
+  id: string;
+  title: string;
+  category: string;
+  gallery?: boolean;
+  photos: string[];
+  heldPhotos?: string[];
+}[];
+
+const galleryProjects = projectGroups.filter(
+  (project) => project.gallery !== false,
+);
+const fixedPhotoIds = Object.keys(
+  JSON.parse(
+    readFileSync(
+      new URL('../../scripts/fixed-photo-sources.json', import.meta.url),
+      'utf8',
+    ),
+  ),
+);
 
 const routes = ['/', '/services/', '/about-us/', '/our-work/', '/contact/'];
 
@@ -67,15 +94,21 @@ test('gallery filters and photo viewer work with keyboard', async ({
 }) => {
   await page.goto('/our-work/');
   await page.getByRole('button', { name: 'Cabinets', exact: true }).click();
-  await expect(page.locator('.project-card:visible')).toHaveCount(2);
-  const photo = page.getByRole('link', { name: 'Enlarge: Kitchen details' });
+  await expect(page.locator('.project-card:visible')).toHaveCount(
+    galleryProjects.filter((project) => project.category === 'Cabinets').length,
+  );
+  const photo = page.getByRole('link', {
+    name: 'Enlarge: Kitchen cabinet finishes',
+  });
   await photo.click();
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).not.toBeVisible();
   await expect(photo).toBeFocused();
   await page.getByRole('button', { name: 'All', exact: true }).click();
-  await expect(page.locator('.project-card:visible')).toHaveCount(12);
+  await expect(page.locator('.project-card:visible')).toHaveCount(
+    galleryProjects.length,
+  );
 });
 
 test('contact is an honest non-submitting preview with selected service', async ({
@@ -106,27 +139,34 @@ test('service index jumps to a service without creating extra routes', async ({
   await expect(page.locator('#cabinets h2')).toHaveText('Cabinet Projects');
 });
 
-test('photo viewer moves through only the filtered photos', async ({
+test('photo viewer stays inside the selected project and handles single-photo projects', async ({
   page,
 }) => {
   await page.goto('/our-work/');
   await page.getByRole('button', { name: 'Exteriors', exact: true }).click();
-  await page.getByRole('link', { name: 'Enlarge: Exterior details' }).click();
+  await page
+    .getByRole('link', { name: 'Enlarge: Two-story exterior painting' })
+    .click();
   const dialog = page.getByRole('dialog');
-  await expect(dialog.locator('[data-photo-position]')).toHaveText('1 / 6');
+  await expect(dialog.locator('[data-photo-position]')).toHaveText('1 / 2');
   await page.keyboard.press('ArrowRight');
-  await expect(dialog.locator('.lightbox-caption')).toHaveText(
-    'A welcoming entrance',
+  await expect(dialog.locator('.lightbox-frame.is-active')).toHaveAttribute(
+    'data-photo',
+    'cps-026',
   );
   await dialog.getByRole('button', { name: 'Next photo' }).click();
-  await expect(dialog.locator('.lightbox-caption')).toHaveText(
-    'Outdoor living',
+  await expect(dialog.locator('[data-photo-position]')).toHaveText('1 / 2');
+  await expect(dialog.locator('[data-project-title]')).toHaveText(
+    'Two-story exterior painting',
   );
-  await dialog.getByRole('button', { name: 'Next photo' }).click();
-  await expect(dialog.locator('[data-photo-position]')).toHaveText('4 / 6');
+  await expect(dialog.locator('[data-project-description]')).toContainText(
+    'covered rear porch',
+  );
   await page.keyboard.press('Escape');
   await page.getByRole('button', { name: 'Cabinets', exact: true }).click();
-  await page.getByRole('link', { name: 'Enlarge: Kitchen details' }).click();
+  await page
+    .getByRole('link', { name: 'Enlarge: Kitchen cabinet finishes' })
+    .click();
   await expect(
     dialog.getByRole('button', { name: 'Next photo' }),
   ).toBeEnabled();
@@ -134,9 +174,22 @@ test('photo viewer moves through only the filtered photos', async ({
     dialog.getByRole('button', { name: 'Previous photo' }),
   ).toBeEnabled();
   await page.keyboard.press('ArrowRight');
-  await expect(dialog.locator('.lightbox-caption')).toHaveText(
-    'Cabinet details',
+  await expect(dialog.locator('.lightbox-frame.is-active')).toHaveAttribute(
+    'data-photo',
+    'cps-023',
   );
+  await page.keyboard.press('Escape');
+  await page.getByRole('button', { name: 'All', exact: true }).click();
+  await page
+    .getByRole('link', { name: 'Enlarge: Commercial exterior' })
+    .click();
+  await expect(dialog.locator('[data-photo-position]')).toHaveText('1 / 1');
+  await expect(
+    dialog.getByRole('button', { name: 'Next photo' }),
+  ).toBeDisabled();
+  await expect(
+    dialog.getByRole('button', { name: 'Previous photo' }),
+  ).toBeDisabled();
 });
 
 test('services remain navigable without JavaScript', async ({ browser }) => {
@@ -298,7 +351,7 @@ test('interior thumbnails switch the main photograph smoothly with mouse and key
   const showcase = page.locator('[data-photo-switcher]');
   const links = showcase.locator('[data-showcase-select]');
   const photos = showcase.locator('[data-showcase-photo]');
-  await expect(links).toHaveCount(4);
+  await expect(links).toHaveCount(2);
   await links.nth(1).click();
   await expect(links.nth(1)).toHaveAttribute('aria-current', 'true');
   await expect(photos.nth(1)).toHaveClass(/is-active/);
@@ -310,10 +363,10 @@ test('interior thumbnails switch the main photograph smoothly with mouse and key
         .evaluate((photo) => Number(getComputedStyle(photo).opacity)),
     )
     .toBeGreaterThan(0.99);
-  await links.nth(2).focus();
+  await links.nth(0).focus();
   await page.keyboard.press('Enter');
-  await expect(photos.nth(2)).toHaveClass(/is-active/);
-  await expect(showcase.getByRole('status')).toContainText('Photo 3 of 4');
+  await expect(photos.nth(0)).toHaveClass(/is-active/);
+  await expect(showcase.getByRole('status')).toContainText('Photo 1 of 2');
   await expect(page).toHaveURL(/\/$/);
 });
 
@@ -324,7 +377,9 @@ test('interior thumbnails remain real image links without JavaScript', async ({
   const page = await context.newPage();
   await page.goto('/');
   await page.locator('[data-showcase-select]').nth(1).click();
-  await expect(page).toHaveURL(/\/images\/projects\/cps-010\/.+\.webp$/);
+  await expect(page).toHaveURL(
+    /\/images\/projects\/geometric-fireplace\/cps-001-.+\.webp$/,
+  );
   await context.close();
 });
 
@@ -383,4 +438,203 @@ test('shared photographic CTA uses a different image on each applicable page', a
   }
   await page.goto('/contact/');
   await expect(page.locator('.final-cta-photo')).toHaveCount(0);
+});
+
+test('project viewer uses responsive WebP, project thumbnails and an icon-only close button', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/our-work/');
+  await page.locator('#two-story-exterior [data-project-image]').click();
+  const dialog = page.getByRole('dialog');
+  const close = dialog.getByRole('button', {
+    name: 'Close photo',
+    exact: true,
+  });
+  await expect(close).toHaveText('');
+  await expect(close.locator('svg')).toBeVisible();
+  const active = dialog.locator('.lightbox-frame.is-active');
+  await expect(active).toHaveAttribute('data-photo', 'cps-024');
+  const currentSource = await active
+    .locator('img')
+    .evaluate((image: HTMLImageElement) => image.currentSrc);
+  expect(currentSource).toMatch(/\/two-story-exterior\/cps-024-.+-\d+w\.webp$/);
+  const selectedWidth = Number(currentSource.match(/-(\d+)w\.webp$/)![1]);
+  expect(selectedWidth).toBeLessThan(1600);
+  await expect(dialog.locator('.lightbox-thumbnails button')).toHaveCount(2);
+  await expect(
+    dialog.locator('.lightbox-thumbnails img').first(),
+  ).toHaveAttribute('src', /-240w\.webp$/);
+  await dialog.locator('[data-photo-id="cps-026"]').click();
+  await expect(dialog.locator('.lightbox-frame.is-active')).toHaveAttribute(
+    'data-photo',
+    'cps-026',
+  );
+  await expect(dialog.locator('[data-photo-position]')).toHaveText('2 / 2');
+  await close.click();
+  await expect(dialog).not.toBeVisible();
+  await expect(
+    page.locator('#two-story-exterior [data-project-image]'),
+  ).toBeFocused();
+});
+
+test('Home selected work opens the same project gallery instead of unrelated photos', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await page.locator('.work-c-item [data-project-image]').first().click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator('[data-project-title]')).toHaveText(
+    'Two-story exterior painting',
+  );
+  await expect(dialog.locator('.lightbox-thumbnails button')).toHaveCount(2);
+  await expect(dialog.locator('.lightbox-frame.is-active')).toHaveAttribute(
+    'data-photo',
+    'cps-024',
+  );
+});
+
+test('all project photographs remain reachable without JavaScript', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto('/our-work/');
+  await page
+    .locator('#two-story-exterior')
+    .getByRole('link', { name: 'View photo 2', exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/two-story-exterior\/cps-026-.+\.webp$/);
+  await context.close();
+});
+
+test('every project photo decodes and reopening a different gallery cancels stale closes', async ({
+  page,
+}) => {
+  test.setTimeout(60000);
+  await page.goto('/our-work/');
+  await expect(page.locator('[data-gallery]')).toHaveAttribute(
+    'data-ready',
+    'true',
+  );
+  for (const project of galleryProjects) {
+    await page
+      .locator(`[data-project-image][data-project="${project.id}"]`)
+      .evaluate((link: HTMLAnchorElement) => link.click());
+    const dialog = page.getByRole('dialog');
+    await expect(dialog.locator('[data-project-title]')).toHaveText(
+      project.title,
+    );
+    const photos = project.photos.filter(
+      (id) => !project.heldPhotos?.includes(id),
+    );
+    for (const [index, id] of photos.entries()) {
+      if (index)
+        await dialog
+          .locator(`[data-photo-index="${index}"]`)
+          .evaluate((button: HTMLButtonElement) => button.click());
+      await expect(dialog.locator('.lightbox-frame.is-active')).toHaveAttribute(
+        'data-photo',
+        id,
+      );
+      await expect(dialog.locator('[data-photo-position]')).toHaveText(
+        `${index + 1} / ${photos.length}`,
+      );
+    }
+    await dialog.evaluate((element: HTMLDialogElement) => element.close());
+  }
+});
+
+test('portrait photos use the desktop viewport height with details alongside, without cropping', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/our-work/');
+  await page.locator('#brick-porch-entry [data-project-image]').click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog.locator('.lightbox-frame.is-active')).toHaveAttribute(
+    'data-photo',
+    'cps-055',
+  );
+  const stage = await dialog.locator('.lightbox-stage').boundingBox();
+  const sidebar = await dialog.locator('.lightbox-sidebar').boundingBox();
+  expect(stage!.height).toBeGreaterThan(750);
+  expect(Math.abs(stage!.width / stage!.height - 0.75)).toBeLessThan(0.04);
+  expect(sidebar!.x).toBeGreaterThanOrEqual(stage!.x + stage!.width);
+  await expect(dialog.locator('.lightbox-frame.is-active img')).toHaveCSS(
+    'object-fit',
+    'contain',
+  );
+});
+
+test('mobile portraits are larger and the close icon stays visible when scrolling details', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/our-work/');
+  await page.locator('#brick-porch-entry [data-project-image]').click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog.locator('.lightbox-frame.is-active')).toHaveAttribute(
+    'data-photo',
+    'cps-055',
+  );
+  const stage = await dialog.locator('.lightbox-stage').boundingBox();
+  expect(stage!.height).toBeGreaterThan(440);
+  expect(stage!.width).toBeGreaterThan(350);
+  await dialog.locator('.lightbox-content').evaluate((element) => {
+    element.scrollTop = element.scrollHeight;
+  });
+  const close = dialog.getByRole('button', {
+    name: 'Close photo',
+    exact: true,
+  });
+  await expect(close).toBeInViewport();
+  await close.click();
+  await expect(dialog).not.toBeVisible();
+});
+
+test('restored restroom gallery keeps all four client photographs together', async ({
+  page,
+}) => {
+  await page.goto('/our-work/');
+  await page.locator('#restroom-wall-panels [data-project-image]').click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog.locator('.lightbox-thumbnails button')).toHaveCount(4);
+  await expect(dialog.locator('[data-photo-position]')).toHaveText('1 / 4');
+  for (const id of ['cps-004', 'cps-006', 'cps-008', 'cps-015']) {
+    await expect(dialog.locator(`[data-photo-id="${id}"]`)).toHaveCount(1);
+  }
+});
+
+test('every corrected fixed photo is published once and no older asset URL is used', async ({
+  page,
+}) => {
+  await page.goto('/our-work/');
+  const data = JSON.parse(
+    (await page.locator('[data-gallery-projects]').textContent()) ?? '[]',
+  ) as { photos: { id: string; variants: { src: string }[] }[] }[];
+  const photos = data.flatMap((project) => project.photos);
+  expect(photos.map((photo) => photo.id).sort()).toEqual(
+    [...fixedPhotoIds].sort(),
+  );
+  expect(new Set(photos.map((photo) => photo.id)).size).toBe(
+    fixedPhotoIds.length,
+  );
+  for (const photo of photos) {
+    for (const variant of photo.variants)
+      expect(variant.src).toMatch(/-fixed-[a-f0-9]{8}-\d+w\.(webp|jpg)$/);
+  }
+  for (const route of routes) {
+    await page.goto(route);
+    for (const image of await page
+      .locator('main picture[data-photo-id] img')
+      .all()) {
+      await expect(image).toHaveAttribute(
+        'src',
+        /-fixed-[a-f0-9]{8}-\d+w\.jpg$/,
+      );
+    }
+  }
 });

@@ -432,6 +432,15 @@
     color: var(--muted);
     font-size: 0.65rem;
   }
+  .project-card .project-description {
+    flex-basis: 100%;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+  .project-card {
+    scroll-margin-top: 8rem;
+  }
   .area-section {
     padding-block: 1rem 5rem;
   }
@@ -741,38 +750,158 @@
     color: white;
   }
   .lightbox {
-    padding: 3.5rem 1rem 1rem;
+    --photo-ratio: 1.333333;
+    --viewer-height: min(94svh, 64rem);
+    --sidebar-width: clamp(17rem, 23vw, 21rem);
+    padding: 0.75rem;
     border: 0;
-    width: min(1050px, 94vw);
-    max-height: 94svh;
+    width: min(
+      96vw,
+      calc(
+        (var(--viewer-height) - 1.5rem) * var(--photo-ratio) +
+          var(--sidebar-width) + 2.5rem
+      )
+    );
+    height: min(
+      var(--viewer-height),
+      calc((96vw - var(--sidebar-width) - 2.5rem) / var(--photo-ratio) + 1.5rem)
+    );
+    max-width: 100%;
+    max-height: 96svh;
+    overflow: hidden;
     background: var(--paper);
+  }
+  .lightbox-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--sidebar-width);
+    gap: 1rem;
+    height: 100%;
+    min-height: 0;
+  }
+  .lightbox-sidebar {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    padding: 3.5rem 0.5rem 0.5rem;
+    overflow-y: auto;
+  }
+  .lightbox-sidebar .lightbox-controls {
+    margin-top: auto;
+    padding-top: 1rem;
   }
   .lightbox::backdrop {
     background: #171914ed;
   }
-  .lightbox img {
-    width: 100%;
-    height: min(63svh, 650px);
-    object-fit: contain;
+  .lightbox-stage {
+    position: relative;
+    height: 100%;
+    min-height: 0;
+    min-width: 0;
     background: #ece4d6;
   }
-  .lightbox > p {
+  .lightbox-frame {
+    position: absolute;
+    inset: 0;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .lightbox-frame.is-active {
+    opacity: 1;
+  }
+  .lightbox-stage img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .lightbox-caption {
     font-size: 0.85rem;
-    margin-top: 0.7rem;
+    margin-top: 1rem;
+    color: var(--muted);
   }
   .lightbox-close {
     position: absolute;
     top: 0.5rem;
     right: 1rem;
+    z-index: 2;
     border: none;
-    background: transparent;
-    min-height: 40px;
+    background: var(--paper);
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    padding: 0;
     color: var(--ink);
     font-size: 0.8rem;
   }
-  .lightbox-close span {
-    margin-left: 1rem;
-    font-size: 1.3rem;
+  .lightbox-copy {
+    margin-top: 0;
+  }
+  .lightbox-copy h2 {
+    font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+    letter-spacing: -0.03em;
+  }
+  .lightbox-copy p {
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    max-width: 80ch;
+  }
+  .lightbox-thumbnails {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 0.5rem 2px;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+  }
+  .lightbox-thumbnails button {
+    flex: 0 0 80px;
+    height: 64px;
+    padding: 2px;
+    border: 2px solid transparent;
+    background: transparent;
+  }
+  .lightbox-thumbnails button[aria-pressed='true'] {
+    border-color: var(--gold);
+  }
+  .lightbox-thumbnails img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  @media (max-width: 850px) {
+    .lightbox {
+      width: 96vw;
+      height: auto;
+      padding: 0.5rem;
+    }
+    .lightbox-content {
+      display: block;
+      height: auto;
+      max-height: calc(96svh - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .lightbox-stage {
+      height: min(calc((96vw - 1rem) / var(--photo-ratio)), 72svh);
+    }
+    .lightbox-sidebar {
+      display: block;
+      padding: 1rem 0.5rem 0.5rem;
+      overflow: visible;
+    }
+    .lightbox-sidebar .lightbox-controls {
+      margin-top: 1rem;
+    }
+    .lightbox-close {
+      top: 0.75rem;
+      right: 0.75rem;
+      border-radius: 50%;
+    }
   }
   body:has(dialog[open]) {
     overflow: hidden;

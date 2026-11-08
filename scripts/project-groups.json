@@ -1,0 +1,170 @@
+[
+  {
+    "id": "two-story-exterior",
+    "title": "Two-story exterior painting",
+    "category": "Exteriors",
+    "description": "Exterior color and trim details across the siding, windows and covered rear porch of a two-story home.",
+    "photos": ["cps-024", "cps-026"]
+  },
+  {
+    "id": "living-room",
+    "title": "Living room painting",
+    "category": "Interiors",
+    "description": "Light-colored walls and trim throughout an open living space, with views of the fireplace and wood-look flooring.",
+    "photos": ["cps-007"]
+  },
+  {
+    "id": "kitchen-cabinets",
+    "title": "Kitchen cabinet finishes",
+    "category": "Cabinets",
+    "description": "White cabinetry, cabinet doors and island details, alongside a view of the same kitchen with natural wood finishes.",
+    "photos": ["cps-022", "cps-023"]
+  },
+  {
+    "id": "masonry-entry",
+    "title": "Wood entry door & painted masonry",
+    "category": "Exteriors",
+    "description": "Wood entry door finishes and the surrounding light-painted brickwork, shown from two views of the entrance.",
+    "photos": ["cps-002", "cps-021"]
+  },
+  {
+    "id": "covered-patio",
+    "title": "Covered patio finishes",
+    "category": "Exteriors",
+    "description": "Exterior posts, fascia and ceiling details around a covered patio, including a view with scaffolding in place.",
+    "photos": ["cps-017", "cps-018"]
+  },
+  {
+    "id": "blue-bathroom-vanity",
+    "title": "Blue vanity cabinet finishes",
+    "category": "Cabinets",
+    "description": "Dark blue vanity cabinetry paired with light countertops and light bathroom walls.",
+    "photos": ["cps-042"]
+  },
+  {
+    "id": "wine-storage-cabinets",
+    "title": "Wine cabinet finishes",
+    "category": "Cabinets",
+    "description": "Diamond-shaped wine storage, shelving and cabinet details shown with dark and natural wood finishes.",
+    "photos": ["cps-040", "cps-035"]
+  },
+  {
+    "id": "patterned-bathroom",
+    "title": "Bathroom wall finishes",
+    "category": "Interiors",
+    "description": "Vanity wall preparation and patterned wall details around a double bathroom vanity.",
+    "photos": ["cps-039", "cps-038"]
+  },
+  {
+    "id": "gray-exterior-siding",
+    "title": "Exterior siding & trim",
+    "category": "Exteriors",
+    "description": "Siding and trim details along the side of a home, including close views of the exterior surfaces and gray finish.",
+    "photos": ["cps-048", "cps-047", "cps-046", "cps-045"]
+  },
+  {
+    "id": "commercial-exterior",
+    "title": "Commercial exterior",
+    "category": "Exteriors",
+    "description": "Exterior facade, balcony and trim details on a two-story commercial property.",
+    "photos": ["cps-012"]
+  },
+  {
+    "id": "stone-entry-door",
+    "title": "Wood entry door finishes",
+    "category": "Exteriors",
+    "description": "Wood entry door surface and finish details within a stone entrance surround.",
+    "photos": ["cps-044", "cps-043"]
+  },
+  {
+    "id": "timber-interior",
+    "title": "Timber interior details",
+    "category": "Interiors",
+    "description": "Exposed ceiling beams and carved doorway details, shown with natural and darker wood tones in the same interior.",
+    "photos": ["cps-054", "cps-053", "cps-051", "cps-052"]
+  },
+  {
+    "id": "geometric-fireplace",
+    "title": "Geometric fireplace surround",
+    "category": "Interiors",
+    "description": "Geometric panel details around a fireplace, with surface preparation and a dark-painted surround visible in the photographs.",
+    "photos": ["cps-009", "cps-001"]
+  },
+  {
+    "id": "long-built-in-shelving",
+    "title": "Long built-in shelving",
+    "category": "Cabinets",
+    "description": "Long built-in shelves, white finishes and wood panel details photographed during interior work.",
+    "photos": ["cps-010", "cps-011"]
+  },
+  {
+    "id": "corner-built-in-shelving",
+    "title": "Corner built-in shelving",
+    "category": "Cabinets",
+    "description": "White corner shelving beneath a wall-mounted television, together with a view of the shelving and project materials.",
+    "photos": ["cps-014", "cps-005"]
+  },
+  {
+    "id": "blue-siding-house",
+    "title": "Blue exterior siding",
+    "category": "Exteriors",
+    "description": "Blue siding, white trim and garage exterior details across multiple elevations of a single-story home.",
+    "photos": ["cps-036", "cps-037", "cps-033", "cps-034"]
+  },
+  {
+    "id": "stone-front-house",
+    "title": "Stone-front house exterior",
+    "category": "Exteriors",
+    "description": "Light siding, window trim and exterior wall details across the front, side and rear elevations of a stone-front home.",
+    "photos": ["cps-030", "cps-028", "cps-029", "cps-027"]
+  },
+  {
+    "id": "decorative-glass-entry",
+    "title": "Decorative glass entry door",
+    "category": "Exteriors",
+    "description": "Wood finish details around a decorative glass entry door set within a brick entrance.",
+    "photos": ["cps-019", "cps-013"]
+  },
+  {
+    "id": "brick-porch-entry",
+    "title": "Brick-porch entry door",
+    "category": "Exteriors",
+    "description": "Door masking and dark entry door finish details at an entrance with sidelights and a brick porch.",
+    "photos": ["cps-055", "cps-025"]
+  },
+  {
+    "id": "light-bathroom",
+    "title": "Light bathroom finishes",
+    "category": "Interiors",
+    "description": "Bathroom wall preparation and light wall finishes around the shower and vanity area.",
+    "photos": ["cps-032", "cps-031"]
+  },
+  {
+    "id": "interior-wall-painting",
+    "title": "Interior wall painting",
+    "category": "Interiors",
+    "description": "Wall color and panel details in an interior corner, with light and purple finishes visible in the photographs.",
+    "photos": ["cps-049", "cps-050"]
+  },
+  {
+    "id": "patio-ceiling-trim",
+    "title": "Patio ceiling & trim",
+    "category": "Exteriors",
+    "description": "Patio ceiling, fascia and exterior edge details, including a view during work.",
+    "photos": ["cps-003", "cps-016"]
+  },
+  {
+    "id": "bathroom-wall-preparation",
+    "title": "Bathroom wall preparation",
+    "category": "Interiors",
+    "description": "An opened bathroom wall showing studs and insulation during interior preparation.",
+    "photos": ["cps-041"]
+  },
+  {
+    "id": "restroom-wall-panels",
+    "title": "Restroom wall panels",
+    "category": "Interiors",
+    "description": "Blue and white lower wall panel finishes in a restroom, with wide views and close-up details around the door and fixtures.",
+    "photos": ["cps-004", "cps-006", "cps-008", "cps-015"]
+  }
+]

@@ -1,4 +1,6 @@
 /** Native links/dialog stay usable without an animation dependency. */
+import { initGalleries } from './gallery';
+
 let cleanupHeader: (() => void) | undefined;
 let cleanupShowcases: (() => void)[] = [];
 
@@ -118,120 +120,7 @@ function initInteractions() {
         delete showcase.dataset.showcaseReady;
       });
     });
-  document
-    .querySelectorAll<HTMLElement>('[data-gallery]')
-    .forEach((gallery) => {
-      if (gallery.dataset.ready) return;
-      gallery.dataset.ready = 'true';
-      const filters = gallery.querySelector<HTMLElement>('.gallery-filters');
-      if (filters) filters.hidden = false;
-      const dialog = gallery.querySelector<HTMLDialogElement>('dialog');
-      const image = dialog?.querySelector('img');
-      const caption = dialog?.querySelector('p');
-      const links = Array.from(
-        gallery.querySelectorAll<HTMLAnchorElement>('[data-project-image]'),
-      );
-      let activeLink: HTMLAnchorElement | undefined;
-      const visibleLinks = () =>
-        links.filter(
-          (link) => !link.closest<HTMLElement>('[data-category]')?.hidden,
-        );
-      const showPhoto = (link: HTMLAnchorElement) => {
-        if (!image || !caption) return;
-        activeLink = link;
-        image.src = link.href;
-        image.alt = link.dataset.alt ?? '';
-        caption.textContent = link.dataset.title ?? '';
-        const visible = visibleLinks();
-        const position = dialog?.querySelector('[data-photo-position]');
-        if (position)
-          position.textContent = `${visible.indexOf(link) + 1} / ${visible.length}`;
-        dialog
-          ?.querySelectorAll<HTMLButtonElement>(
-            '[data-previous-photo], [data-next-photo]',
-          )
-          .forEach((button) => {
-            button.disabled = visible.length < 2;
-          });
-      };
-      const movePhoto = (direction: number) => {
-        const visible = visibleLinks();
-        if (!activeLink || visible.length < 2) return;
-        const next =
-          visible[
-            (visible.indexOf(activeLink) + direction + visible.length) %
-              visible.length
-          ];
-        if (next) showPhoto(next);
-      };
-      gallery
-        .querySelectorAll<HTMLButtonElement>('[data-filter]')
-        .forEach((button) => {
-          button.addEventListener('click', () => {
-            let count = 0;
-            gallery
-              .querySelectorAll<HTMLButtonElement>('[data-filter]')
-              .forEach((item) =>
-                item.setAttribute('aria-pressed', String(item === button)),
-              );
-            gallery
-              .querySelectorAll<HTMLElement>('[data-category]')
-              .forEach((card) => {
-                card.hidden =
-                  button.dataset.filter !== 'All' &&
-                  card.dataset.category !== button.dataset.filter;
-                if (!card.hidden) count++;
-              });
-            const status = gallery.querySelector('.gallery-status');
-            if (status) status.textContent = `${count} projects`;
-            document.dispatchEvent(new Event('gallery:filter'));
-          });
-        });
-      links.forEach((link) => {
-        link.addEventListener('click', (event) => {
-          if (
-            event.ctrlKey ||
-            event.metaKey ||
-            event.shiftKey ||
-            !dialog ||
-            !image ||
-            !caption
-          )
-            return;
-          event.preventDefault();
-          showPhoto(link);
-          dialog.showModal();
-        });
-      });
-      dialog
-        ?.querySelector('.lightbox-close')
-        ?.addEventListener('click', () => dialog.close());
-      dialog
-        ?.querySelector('[data-previous-photo]')
-        ?.addEventListener('click', () => movePhoto(-1));
-      dialog
-        ?.querySelector('[data-next-photo]')
-        ?.addEventListener('click', () => movePhoto(1));
-      dialog?.addEventListener('keydown', (event) => {
-        if (event.altKey || event.ctrlKey || event.metaKey) return;
-        if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-          event.preventDefault();
-          movePhoto(event.key === 'ArrowRight' ? 1 : -1);
-        }
-      });
-      dialog?.addEventListener('click', (event) => {
-        if (event.target === dialog) {
-          const rect = dialog.getBoundingClientRect();
-          if (
-            event.clientX < rect.left ||
-            event.clientX > rect.right ||
-            event.clientY < rect.top ||
-            event.clientY > rect.bottom
-          )
-            dialog.close();
-        }
-      });
-    });
+  initGalleries();
   const form = document.querySelector<HTMLFormElement>('.contact-form');
   // Defence in depth: this preview has no endpoint and never transmits personal data.
   form?.addEventListener('submit', (event) => event.preventDefault());

@@ -1,10 +1,11 @@
 ---
 import ProjectImage from '@/components/ui/ProjectImage.astro';
 import { projects } from '@/config/projects';
+import ProjectLightbox from './ProjectLightbox.astro';
 const visible = projects.slice(0, 5);
 ---
 
-<section class="work-c">
+<section class="work-c" data-gallery>
   <div class="container work-c-head" data-reveal>
     <div>
       <p class="kicker-c">Selected work</p>
@@ -23,7 +24,9 @@ const visible = projects.slice(0, 5);
         <figure class={`work-c-item work-c-item-${index + 1}`}>
           <a
             class="image-frame"
-            href="/our-work/"
+            href={`/our-work/#${project.id}`}
+            data-project-image
+            data-project={project.id}
             aria-label={`View ${project.title} in Our Work`}
           >
             <ProjectImage
@@ -46,4 +49,5 @@ const visible = projects.slice(0, 5);
       </div>
     </div>
   </div>
+  <ProjectLightbox projects={visible} />
 </section>
