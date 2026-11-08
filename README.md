@@ -59,3 +59,7 @@ El repositorio incluye los derivados web, pero no las fuentes de `Contenido Web/
 npm run photos:prepare # Regenerar derivados desde fixed, sin exclusiones
 npm run test:assets   # Verificar archivos, tamaños y hashes
 ```
+
+## Favicon
+
+Se utiliza el logo PNG oficial **completo y transparente**, con símbolo y todos sus textos, sin recortes ni fondo añadido. Se sirve como ICO (16/32/48 px), PNG de 32 px y Apple touch icon de 180 px en las cinco páginas. Los enlaces incluyen una versión para invalidar la caché del favicon anterior. Regenerar con `npm run icons:prepare`; para regenerarlo y verificar sus píxeles se necesita el PNG fuente local `Logo/png_logo_on_a_transparent_checkerboard_background.png`, que se conserva intacto y fuera de Git.

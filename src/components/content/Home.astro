@@ -1,5 +1,6 @@
 ---
 import ProjectImage from '@/components/ui/ProjectImage.astro';
+import CompanyVanImage from '@/components/ui/CompanyVanImage.astro';
 import Action from '@/components/ui/Action.astro';
 import HomeServices from './HomeServices.astro';
 import HomeWork from './HomeWork.astro';
@@ -7,6 +8,7 @@ import FinalCTA from './FinalCTA.astro';
 import ProjectShowcase from './ProjectShowcase.astro';
 import { interiorDetails, ctaPhotos } from '@/config/projects';
 const heroPhotos = [
+  'company-van',
   'cps-007',
   'cps-024',
   'cps-022',
@@ -24,11 +26,18 @@ const heroPhotos = [
         data-hero-slide
         aria-hidden={index !== 0 ? 'true' : undefined}
       >
-        <ProjectImage
-          id={id}
-          sizes="(max-width: 900px) 100vw, 65vw"
-          priority={index === 0}
-        />
+        {id === 'company-van' ? (
+          <CompanyVanImage
+            sizes="(max-width: 900px) 100vw, 65vw"
+            priority={index === 0}
+          />
+        ) : (
+          <ProjectImage
+            id={id}
+            sizes="(max-width: 900px) 100vw, 65vw"
+            priority={index === 0}
+          />
+        )}
       </div>
     ))}
   </div>

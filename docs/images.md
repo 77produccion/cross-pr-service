@@ -48,6 +48,12 @@ El script retira únicamente las variantes generadas obsoletas enumeradas en el 
 
 ## Componente
 
+### Foto corporativa de la van
+
+`src/assets/cross-pro-services-van.jpg` conserva la foto aprobada que se entregó en `public/images/`. No se sirve directamente como JPG público. `CompanyVanImage.astro` usa `astro:assets` para producir WebP y JPEG de 480, 768, 1280 y 1366 px, sin ampliar el original de 1366 × 1024. Se utiliza primero en el hero y en los CTA finales de Home y About Us, manteniendo el zoom existente. La primera aparición es eager/high; los CTA son lazy. Es material corporativo, no un proyecto nuevo: las 54 fotos de `fixed` permanecen intactas y todas siguen en la galería.
+
+### Fotografías de proyectos
+
 ```astro
 ---
 import ProjectImage from '@/components/ui/ProjectImage.astro';

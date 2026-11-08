@@ -14,9 +14,9 @@ export const interiorDetails = groups.find(
 )!.photos;
 
 export const ctaPhotos: Readonly<Record<string, string>> = {
-  home: 'cps-030',
+  home: 'company-van',
   services: 'cps-022',
-  'about-us': 'cps-007',
+  'about-us': 'company-van',
   'our-work': 'cps-036',
 };
 

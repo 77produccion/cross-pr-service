@@ -29,6 +29,21 @@ const fixedPhotoIds = Object.keys(
 
 const routes = ['/', '/services/', '/about-us/', '/our-work/', '/contact/'];
 
+test('official logo favicon files are available in the production build', async ({
+  request,
+}) => {
+  for (const path of [
+    '/favicon.ico?v=full-logo',
+    '/favicon-32x32.png?v=full-logo',
+    '/apple-touch-icon.png?v=full-logo',
+  ]) {
+    const response = await request.get(path);
+    expect(response.status()).toBe(200);
+    expect((await response.body()).length).toBeGreaterThan(100);
+    expect(response.headers()['content-type']).toMatch(/image\//);
+  }
+});
+
 for (const route of routes) {
   test(`${route} renders static accessible structure`, async ({ page }) => {
     const errors: string[] = [];
@@ -45,6 +60,13 @@ for (const route of routes) {
       /.+/,
     );
     await expect(page.locator('html')).toHaveAttribute('lang', 'en-US');
+    await expect(
+      page.locator('link[rel="icon"][type="image/png"]'),
+    ).toHaveAttribute('href', '/favicon-32x32.png?v=full-logo');
+    await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute(
+      'href',
+      '/apple-touch-icon.png?v=full-logo',
+    );
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -252,7 +274,19 @@ test('hero fills the right edge and cycles photographs without location labels',
     0,
   );
   const slides = page.locator('[data-hero-slide]');
-  await expect(slides).toHaveCount(6);
+  await expect(slides).toHaveCount(7);
+  await expect(slides.first().locator('picture')).toHaveAttribute(
+    'data-company-photo',
+    'van',
+  );
+  await expect(slides.first().locator('img')).toHaveAttribute(
+    'loading',
+    'eager',
+  );
+  await expect(slides.first().locator('img')).toHaveAttribute(
+    'fetchpriority',
+    'high',
+  );
   const hero = await page.locator('.hero-c').boundingBox();
   const media = await page.locator('.hero-c-media').boundingBox();
   expect(Math.abs(hero!.height - media!.height)).toBeLessThan(2);
@@ -409,13 +443,13 @@ test('photographic CTA zooms on hover and keeps its contact link', async ({
   await expect(page).toHaveURL(/\/contact\/$/);
 });
 
-test('shared photographic CTA uses a different image on each applicable page', async ({
+test('shared photographic CTA uses the chosen company or project image on each applicable page', async ({
   page,
 }) => {
   const banners = [
-    ['/', 'cps-030'],
+    ['/', 'company-van'],
     ['/services/', 'cps-022'],
-    ['/about-us/', 'cps-007'],
+    ['/about-us/', 'company-van'],
     ['/our-work/', 'cps-036'],
   ];
   for (const [route, image] of banners) {
@@ -424,8 +458,8 @@ test('shared photographic CTA uses a different image on each applicable page', a
     await expect(banner).toHaveCount(1);
     await banner.scrollIntoViewIfNeeded();
     await expect(banner.locator('picture')).toHaveAttribute(
-      'data-photo-id',
-      image!,
+      image === 'company-van' ? 'data-company-photo' : 'data-photo-id',
+      image === 'company-van' ? 'van' : image!,
     );
     await expect(
       banner.getByRole('link', { name: 'Request an Estimate', exact: true }),
@@ -637,4 +671,34 @@ test('every corrected fixed photo is published once and no older asset URL is us
       );
     }
   }
+});
+
+test('company van uses responsive WebP in the first hero slide and the Home CTA', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const first = page.locator('[data-hero-slide]').first().locator('picture');
+  await expect(first).toHaveAttribute('data-company-photo', 'van');
+  await expect(first.locator('source[type="image/webp"]')).toHaveAttribute(
+    'srcset',
+    /480w/,
+  );
+  await expect(first.locator('img')).toHaveAttribute('loading', 'eager');
+  await expect(first.locator('img')).toHaveAttribute('fetchpriority', 'high');
+  await expect(first.locator('img')).toHaveAttribute(
+    'alt',
+    /Cross Pro Services work van/,
+  );
+  const source = await first
+    .locator('img')
+    .evaluate((image: HTMLImageElement) => image.currentSrc);
+  expect(source).toMatch(/\/_astro\/.+\.webp$/);
+  const banner = page.locator('.final-cta-photo');
+  await banner.scrollIntoViewIfNeeded();
+  await expect(banner.locator('picture')).toHaveAttribute(
+    'data-company-photo',
+    'van',
+  );
+  await expect(banner.locator('img')).toHaveAttribute('loading', 'lazy');
+  await expect(banner.locator('img')).toHaveAttribute('alt', '');
 });

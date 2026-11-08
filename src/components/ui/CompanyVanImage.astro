@@ -1,0 +1,29 @@
+---
+import { Picture } from 'astro:assets';
+import van from '@/assets/cross-pro-services-van.jpg';
+
+interface Props {
+  sizes: string;
+  priority?: boolean;
+  alt?: string;
+}
+const {
+  sizes,
+  priority = false,
+  alt = 'Cross Pro Services work van with the company logo, parked in front of homes',
+} = Astro.props;
+---
+
+<Picture
+  src={van}
+  alt={alt}
+  formats={['webp']}
+  fallbackFormat="jpg"
+  widths={[480, 768, 1280, van.width]}
+  sizes={sizes}
+  quality={78}
+  loading={priority ? 'eager' : 'lazy'}
+  fetchpriority={priority ? 'high' : 'auto'}
+  decoding="async"
+  pictureAttributes={{ 'data-company-photo': 'van' }}
+/>

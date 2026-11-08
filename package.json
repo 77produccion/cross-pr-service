@@ -15,6 +15,7 @@
     "format:check": "prettier --check .",
     "test:e2e": "playwright test",
     "photos:prepare": "node scripts/prepare-photos.mjs && prettier --write src/data/photos.json docs/assets/photo-catalog.json",
+    "icons:prepare": "node scripts/prepare-icons.mjs",
     "test:assets": "node --test tests/assets/*.test.mjs",
     "validate": "npm run check && npm run format:check && npm run test:assets && npm run build && npm run test:e2e"
   },
