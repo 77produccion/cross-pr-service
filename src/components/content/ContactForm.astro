@@ -1,5 +1,6 @@
 ---
 import { services } from '@/config/projects';
+import { site, whatsappHref } from '@/config/site';
 ---
 
 <div class="contact-grid">
@@ -16,10 +17,22 @@ import { services } from '@/config/projects';
       <small>& surrounding communities</small>
     </div>
     <div class="contact-note">
+      <strong>Let’s talk about your project</strong>
+      <p>WhatsApp: {site.whatsapp.displayNumber}</p>
+      <a
+        class="button"
+        href={whatsappHref}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Chat on WhatsApp <span class="sr-only">(opens in a new tab)</span>
+      </a>
+    </div>
+    <div class="contact-note">
       <strong>Preview version</strong>
       <p>
-        Our online request form is not accepting submissions yet. Phone and
-        email details will be available once confirmed.
+        Our online request form is not accepting submissions yet. Please contact
+        us on WhatsApp to discuss your project.
       </p>
     </div>
   </aside>
@@ -62,8 +75,8 @@ import { services } from '@/config/projects';
       Tell Us About Your Project<textarea name="message" rows="4"></textarea>
     </label>
     <p class="form-status" id="form-status">
-      Preview only. Sending will be enabled after the business contact and
-      secure delivery service are verified. No information is sent or saved.
+      Preview only. Sending will be enabled after the secure delivery service is
+      verified. No information is sent or saved.
     </p>
     <button class="button" type="submit" disabled>
       Send my request

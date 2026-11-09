@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import { site } from '../../src/config/site';
 
 const projectGroups = JSON.parse(
   readFileSync(
@@ -29,6 +30,36 @@ const fixedPhotoIds = Object.keys(
 
 const routes = ['/', '/services/', '/about-us/', '/our-work/', '/contact/'];
 
+test('floating WhatsApp link works on every page without JavaScript', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 844 });
+    for (const route of routes) {
+      await page.goto(route);
+      const link = page.getByRole('link', {
+        name: 'Chat with Cross Pro Services on WhatsApp (opens in a new tab)',
+      });
+      await expect(link).toBeVisible();
+      await expect(link).toHaveAttribute('target', '_blank');
+      const url = new URL((await link.getAttribute('href'))!);
+      expect(url.origin).toBe('https://wa.me');
+      expect(url.pathname).toBe('/15129179901');
+      expect(url.searchParams.get('text')).toBe(site.whatsapp.message);
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await expect(link).toBeInViewport();
+      const box = await link.boundingBox();
+      expect(box!.width).toBeGreaterThanOrEqual(44);
+      expect(box!.height).toBeGreaterThanOrEqual(44);
+      expect(box!.x + box!.width).toBeLessThan(width);
+      expect(box!.x).toBeGreaterThan(width / 2);
+    }
+  }
+  await context.close();
+});
+
 test('official logo favicon files are available in the production build', async ({
   request,
 }) => {
@@ -41,6 +72,24 @@ test('official logo favicon files are available in the production build', async 
     expect(response.status()).toBe(200);
     expect((await response.body()).length).toBeGreaterThan(100);
     expect(response.headers()['content-type']).toMatch(/image\//);
+  }
+});
+
+test('footer and contact show the WhatsApp number with descriptive CTAs', async ({
+  page,
+}) => {
+  await page.goto('/contact/');
+  for (const section of [
+    page.locator('.site-footer'),
+    page.locator('.contact-aside'),
+  ]) {
+    await expect(section).toContainText('+1 (512) 917-9901');
+    const link = section.getByRole('link', { name: /Chat on WhatsApp/ });
+    await expect(link).toHaveAttribute(
+      'href',
+      `https://wa.me/${site.whatsapp.number}?text=${encodeURIComponent(site.whatsapp.message)}`,
+    );
+    await expect(link).not.toContainText(site.whatsapp.displayNumber);
   }
 });
 

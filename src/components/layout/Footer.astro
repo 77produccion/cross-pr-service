@@ -1,5 +1,5 @@
 ---
-import { site } from '@/config/site';
+import { site, whatsappHref } from '@/config/site';
 import Container from '@/components/ui/Container.astro';
 import { Image } from 'astro:assets';
 import logo from '@/assets/logo.webp';
@@ -16,9 +16,17 @@ import logo from '@/assets/logo.webp';
         <br />
         and surrounding communities.
       </p>
-      <a class="text-link" href="/contact/">
-        Let’s talk about your project
-      </a>
+      <div class="footer-contact">
+        <p>WhatsApp: {site.whatsapp.displayNumber}</p>
+        <a
+          class="text-link"
+          href={whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Chat on WhatsApp <span class="sr-only">(opens in a new tab)</span>
+        </a>
+      </div>
     </div>
     <div class="footer-links">
       {site.navigation.map((item) => (
