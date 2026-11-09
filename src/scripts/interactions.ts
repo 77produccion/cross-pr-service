@@ -3,8 +3,16 @@ import { initGalleries } from './gallery';
 
 let cleanupHeader: (() => void) | undefined;
 let cleanupShowcases: (() => void)[] = [];
+let whatsappTimer: number | undefined;
 
 function initInteractions() {
+  window.clearTimeout(whatsappTimer);
+  const whatsapp = document.querySelector<HTMLElement>('.whatsapp-button');
+  if (whatsapp) {
+    whatsappTimer = window.setTimeout(() => {
+      whatsapp.classList.add('is-compact');
+    }, 5000);
+  }
   const header = document.querySelector<HTMLElement>('.site-header');
   const toggle = header?.querySelector<HTMLButtonElement>('.menu-toggle');
   if (header && toggle && !header.classList.contains('menu-ready')) {
@@ -136,6 +144,7 @@ function initInteractions() {
 initInteractions();
 document.addEventListener('astro:page-load', initInteractions);
 document.addEventListener('astro:before-swap', () => {
+  window.clearTimeout(whatsappTimer);
   cleanupHeader?.();
   cleanupShowcases.forEach((cleanup) => cleanup());
   cleanupShowcases = [];

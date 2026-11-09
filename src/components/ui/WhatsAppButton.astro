@@ -59,13 +59,14 @@ import { whatsappHref } from '@/config/site';
     flex-shrink: 0;
   }
 
-  @media (max-width: 40rem) {
-    .whatsapp-button {
-      padding: 0.85rem;
-    }
+  .whatsapp-button.is-compact {
+    width: 3.5rem;
+    height: 3.5rem;
+    padding: 0;
+    gap: 0;
+  }
 
-    .whatsapp-button span {
-      display: none;
-    }
+  .whatsapp-button.is-compact span {
+    display: none;
   }
 </style>

@@ -30,6 +30,26 @@ const fixedPhotoIds = Object.keys(
 
 const routes = ['/', '/services/', '/about-us/', '/our-work/', '/contact/'];
 
+test('WhatsApp label disappears after five seconds leaving a circular link', async ({
+  page,
+}) => {
+  await page.clock.install();
+  await page.goto('/');
+  const link = page.locator('.whatsapp-button');
+  await expect(link.locator('span')).toBeVisible();
+  await page.clock.fastForward(4000);
+  await expect(link.locator('span')).toBeVisible();
+  await page.clock.fastForward(1100);
+  await expect(link.locator('span')).toBeHidden();
+  await expect(link.locator('svg')).toBeVisible();
+  const box = await link.boundingBox();
+  expect(box!.width).toBe(56);
+  expect(box!.height).toBe(56);
+  await expect(link).toHaveAccessibleName(
+    'Chat with Cross Pro Services on WhatsApp (opens in a new tab)',
+  );
+});
+
 test('floating WhatsApp link works on every page without JavaScript', async ({
   browser,
 }) => {
@@ -54,7 +74,7 @@ test('floating WhatsApp link works on every page without JavaScript', async ({
       expect(box!.width).toBeGreaterThanOrEqual(44);
       expect(box!.height).toBeGreaterThanOrEqual(44);
       expect(box!.x + box!.width).toBeLessThan(width);
-      expect(box!.x).toBeGreaterThan(width / 2);
+      expect(width - box!.x - box!.width).toBeCloseTo(20, 0);
     }
   }
   await context.close();
@@ -79,17 +99,19 @@ test('footer and contact show the WhatsApp number with descriptive CTAs', async 
   page,
 }) => {
   await page.goto('/contact/');
-  for (const section of [
-    page.locator('.site-footer'),
-    page.locator('.contact-aside'),
-  ]) {
+  const footer = page.locator('.site-footer');
+  const footerLink = footer.getByRole('link', { name: /Chat on WhatsApp:/ });
+  await expect(footerLink).toHaveText(site.whatsapp.displayNumber);
+  await expect(footerLink.locator('svg')).toBeVisible();
+  for (const section of [footer, page.locator('.contact-aside')]) {
     await expect(section).toContainText('+1 (512) 917-9901');
     const link = section.getByRole('link', { name: /Chat on WhatsApp/ });
     await expect(link).toHaveAttribute(
       'href',
       `https://wa.me/${site.whatsapp.number}?text=${encodeURIComponent(site.whatsapp.message)}`,
     );
-    await expect(link).not.toContainText(site.whatsapp.displayNumber);
+    if (section !== footer)
+      await expect(link).not.toContainText(site.whatsapp.displayNumber);
   }
 });
 

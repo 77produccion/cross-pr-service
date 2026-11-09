@@ -17,14 +17,33 @@ import logo from '@/assets/logo.webp';
         and surrounding communities.
       </p>
       <div class="footer-contact">
-        <p>WhatsApp: {site.whatsapp.displayNumber}</p>
         <a
-          class="text-link"
+          class="footer-whatsapp"
           href={whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={`Chat on WhatsApp: ${site.whatsapp.displayNumber} (opens in a new tab)`}
         >
-          Chat on WhatsApp <span class="sr-only">(opens in a new tab)</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M21 11.5a9 9 0 0 1-13.5 7.8L3 21l1.7-4.5A9 9 0 1 1 21 11.5Z"></path>
+            <path
+              d="m8 7 1.5 3-1 1a8 8 0 0 0 4.5 4.5l1-1 3 1.5c-.5 1.5-1.5 2-3 1.5-4.5-1.5-7.5-4.5-9-9C4.5 7 5 6 6.5 5.5Z"
+              transform="translate(2 1) scale(.8)"
+            ></path>
+          </svg>
+          <span>{site.whatsapp.displayNumber}</span>
         </a>
       </div>
     </div>
@@ -41,3 +60,26 @@ import logo from '@/assets/logo.webp';
     </div>
   </Container>
 </footer>
+
+<style>
+  .footer-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 44px;
+    text-decoration: none;
+  }
+
+  .footer-whatsapp svg {
+    flex-shrink: 0;
+  }
+
+  .footer-whatsapp:hover span {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+
+  .footer-whatsapp:focus-visible {
+    outline-color: var(--paper);
+  }
+</style>
