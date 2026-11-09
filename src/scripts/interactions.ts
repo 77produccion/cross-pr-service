@@ -4,13 +4,29 @@ import { initGalleries } from './gallery';
 let cleanupHeader: (() => void) | undefined;
 let cleanupShowcases: (() => void)[] = [];
 let whatsappTimer: number | undefined;
+let whatsappCollapseTimer: number | undefined;
 
 function initInteractions() {
   window.clearTimeout(whatsappTimer);
+  window.clearTimeout(whatsappCollapseTimer);
   const whatsapp = document.querySelector<HTMLElement>('.whatsapp-button');
   if (whatsapp) {
     whatsappTimer = window.setTimeout(() => {
-      whatsapp.classList.add('is-compact');
+      const bounds = whatsapp.getBoundingClientRect();
+      const icon = whatsapp.querySelector('svg')?.getBoundingClientRect();
+      const distance = bounds.width - 56;
+      whatsapp.style.setProperty('--collapse-distance', `${distance}px`);
+      whatsapp.style.setProperty(
+        '--icon-shift',
+        `${icon ? bounds.right - 28 - icon.width / 2 - icon.left : 0}px`,
+      );
+      whatsapp.classList.add('is-collapsing');
+      whatsappCollapseTimer = window.setTimeout(() => {
+        whatsapp.classList.remove('is-collapsing');
+        whatsapp.classList.add('is-compact');
+        whatsapp.style.removeProperty('--collapse-distance');
+        whatsapp.style.removeProperty('--icon-shift');
+      }, 450);
     }, 5000);
   }
   const header = document.querySelector<HTMLElement>('.site-header');
@@ -145,6 +161,7 @@ initInteractions();
 document.addEventListener('astro:page-load', initInteractions);
 document.addEventListener('astro:before-swap', () => {
   window.clearTimeout(whatsappTimer);
+  window.clearTimeout(whatsappCollapseTimer);
   cleanupHeader?.();
   cleanupShowcases.forEach((cleanup) => cleanup());
   cleanupShowcases = [];

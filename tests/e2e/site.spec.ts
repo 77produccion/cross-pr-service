@@ -39,7 +39,10 @@ test('WhatsApp label disappears after five seconds leaving a circular link', asy
   await expect(link.locator('span')).toBeVisible();
   await page.clock.fastForward(4000);
   await expect(link.locator('span')).toBeVisible();
-  await page.clock.fastForward(1100);
+  await page.clock.fastForward(1050);
+  await expect(link).toHaveClass(/is-collapsing/);
+  await expect(link.locator('span')).toHaveCSS('transition-duration', '0.25s');
+  await page.clock.fastForward(500);
   await expect(link.locator('span')).toBeHidden();
   await expect(link.locator('svg')).toBeVisible();
   const box = await link.boundingBox();

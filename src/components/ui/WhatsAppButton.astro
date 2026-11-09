@@ -44,6 +44,8 @@ import { whatsappHref } from '@/config/site';
     font-size: 0.875rem;
     font-weight: 600;
     text-decoration: none;
+    clip-path: inset(-24px round 999px);
+    transition: clip-path 0.45s ease-in-out;
   }
 
   .whatsapp-button:hover {
@@ -57,13 +59,35 @@ import { whatsappHref } from '@/config/site';
 
   .whatsapp-button svg {
     flex-shrink: 0;
+    transition: transform 0.45s ease-in-out;
+  }
+
+  .whatsapp-button span {
+    transition: opacity 0.25s ease-out;
+  }
+
+  .whatsapp-button.is-collapsing {
+    clip-path: inset(0 0 0 var(--collapse-distance) round 999px);
+  }
+
+  .whatsapp-button.is-collapsing svg {
+    transform: translateX(var(--icon-shift));
+  }
+
+  .whatsapp-button.is-collapsing span {
+    opacity: 0;
   }
 
   .whatsapp-button.is-compact {
+    transition: none;
     width: 3.5rem;
     height: 3.5rem;
     padding: 0;
     gap: 0;
+  }
+
+  .whatsapp-button.is-compact svg {
+    transition: none;
   }
 
   .whatsapp-button.is-compact span {
