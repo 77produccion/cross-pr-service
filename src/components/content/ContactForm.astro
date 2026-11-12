@@ -1,26 +1,25 @@
 ---
-import { services } from '@/config/projects';
 import { site, whatsappHref } from '@/config/site';
+import EstimateForm from './EstimateForm.astro';
 ---
 
 <div class="contact-grid">
   <aside class="contact-aside">
-    <h2>Tell us about your project</h2>
-    <p>
-      Residential & commercial projects in Austin, San Antonio and surrounding
-      communities.
-    </p>
+    <p class="overline">Project details</p>
+    <h2>
+      Let’s talk about <em>your space.</em>
+    </h2>
     <div class="contact-coverage">
       <span class="small-label">Service area</span>
       <p>Austin</p>
       <p>San Antonio</p>
-      <small>& surrounding communities</small>
+      <small>&amp; surrounding communities</small>
     </div>
     <div class="contact-note">
-      <strong>Let’s talk about your project</strong>
+      <strong>Contact our team</strong>
       <p>WhatsApp: {site.whatsapp.displayNumber}</p>
       <a
-        class="button"
+        class="text-link"
         href={whatsappHref}
         target="_blank"
         rel="noopener noreferrer"
@@ -28,58 +27,6 @@ import { site, whatsappHref } from '@/config/site';
         Chat on WhatsApp <span class="sr-only">(opens in a new tab)</span>
       </a>
     </div>
-    <div class="contact-note">
-      <strong>Preview version</strong>
-      <p>
-        Our online request form is not accepting submissions yet. Please contact
-        us on WhatsApp to discuss your project.
-      </p>
-    </div>
   </aside>
-  <form class="contact-form" aria-describedby="form-status">
-    <div class="form-row">
-      <label>
-        Full Name <span aria-hidden="true">*</span>
-        <input name="name" autocomplete="name" required />
-      </label>
-      <label>
-        Phone Number <span aria-hidden="true">*</span>
-        <input type="tel" name="phone" autocomplete="tel" required />
-      </label>
-    </div>
-    <label>
-      Email Address <span aria-hidden="true">*</span>
-      <input type="email" name="email" autocomplete="email" required />
-    </label>
-    <div class="form-row">
-      <label>
-        Project Type
-        <select name="projectType">
-          <option value="">Select a service</option>
-          {services.map((service) => (
-            <option value={service.id}>{service.title}</option>
-          ))}
-          <option value="other">Other</option>
-        </select>
-      </label>
-      <label>
-        Project Location
-        <input
-          name="location"
-          autocomplete="address-level2"
-          placeholder="City or ZIP code"
-        />
-      </label>
-    </div>
-    <label>
-      Tell Us About Your Project<textarea name="message" rows="4"></textarea>
-    </label>
-    <p class="form-status" id="form-status">
-      Preview only. Sending will be enabled after the secure delivery service is
-      verified. No information is sent or saved.
-    </p>
-    <button class="button" type="submit" disabled>
-      Send my request
-    </button>
-  </form>
+  <EstimateForm id="contact-estimate" />
 </div>

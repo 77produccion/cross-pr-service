@@ -3,7 +3,8 @@
 ## Organización
 
 - Entrega original intacta: `Contenido Web/Fotos/`, archivada con sus 55 hashes en `docs/assets/original-photo-checksums.json`.
-- Fuente vigente y exclusiva: `Contenido Web/fixed/`, con los 54 archivos corregidos por el cliente. Se trasladó la carpeta completa desde `public/images/fixed/` sin modificar los archivos, para no servir JPG fuente pesados.
+- Fuente de la galería: `Contenido Web/fixed/`, con los 54 archivos corregidos por el cliente. Se trasladó la carpeta completa desde `public/images/fixed/` sin modificar los archivos, para no servir JPG fuente pesados.
+- Par antes/después aprobado posteriormente por el cliente: `Contenido Web/Before After/two-story-exterior/exterior-1.png` (antes) y `exterior-2.png` (después). Se archivaron desde `public/images/projects/two-story-exterior/` sin alterar sus bytes. Su catálogo separado no cambia los 54 IDs ni las galerías existentes.
 - Copias organizadas por el cliente: `Contenido Web/Proyectos/`. Se conservaron los nombres y archivos de sus carpetas; se retiraron de `public/images/` después de verificar sus SHA-256 contra los originales, sin borrar ni modificar las imágenes.
 - Archivos activos e IDs estables: `scripts/fixed-photo-sources.json`. Debe enumerar cada archivo de `fixed` exactamente una vez. `scripts/photo-sources.json` conserva los IDs, slugs y textos descriptivos históricos; no se renumera ni se reutiliza material antiguo si falta su versión corregida.
 - Proyectos y fotos relacionadas: `scripts/project-groups.json`. Es la fuente común para las rutas y la galería. Los 54 IDs activos deben aparecer exactamente una vez, sin fotos retenidas ni grupos ocultos.
@@ -26,7 +27,7 @@ Cada derivado parte directamente de su archivo corregido de `fixed`, no de la en
 
 WebP calidad 78 (effort 6) y JPEG progresivo calidad 78 de respaldo, con anchos candidatos **240, 480, 768, 1280 y 1920 px**, limitados por la resolución original. 240 px se usa para miniaturas, sin descargar una foto grande por cada selector. Una foto pequeña no puede ganar detalle al ampliarla: se incluye su ancho nativo y se deben evitar hero/fullscreen si no tiene resolución suficiente.
 
-Los dispositivos no requieren formatos diferentes: `<picture>` elige WebP o JPEG según compatibilidad y `srcset`/`sizes` elige resolución según ancho de diseño y densidad de pantalla. AVIF no se añade por ahora: WebP + JPEG mantiene amplia compatibilidad con menos variantes.
+Los dispositivos no requieren formatos diferentes: `<picture>` elige formato según compatibilidad y `srcset`/`sizes` elige resolución según ancho de diseño y densidad de pantalla. La galería existente mantiene WebP + JPEG. El nuevo par exterior incorpora AVIF tras medir una reducción adicional de bytes (ver abajo).
 
 Los derivados se generan explícitamente para que sean inspeccionables y reutilizables; no volver a comprimirlos con `astro:assets`. Aunque todos estén en el despliegue, el navegador descarga únicamente el candidato elegido por cada imagen usada. No precargar toda la galería.
 
@@ -53,6 +54,29 @@ El script retira únicamente las variantes generadas obsoletas enumeradas en el 
 `src/assets/cross-pro-services-van.jpg` conserva la foto aprobada que se entregó en `public/images/`. No se sirve directamente como JPG público. `CompanyVanImage.astro` usa `astro:assets` para producir WebP y JPEG de 480, 768, 1280 y 1366 px, sin ampliar el original de 1366 × 1024. Se utiliza primero en el hero y en los CTA finales de Home y About Us, manteniendo el zoom existente. La primera aparición es eager/high; los CTA son lazy. Es material corporativo, no un proyecto nuevo: las 54 fotos de `fixed` permanecen intactas y todas siguen en la galería.
 
 ### Fotografías de proyectos
+
+### Par exterior para comparador y hero
+
+```bash
+npm run photos:exterior
+```
+
+`scripts/prepare-exterior.mjs` archiva únicamente los dos PNG entregados en su ruta privada, verifica sus SHA-256 antes de retirar las copias públicas y genera desde las fuentes AVIF calidad 50, WebP calidad 78 y JPEG progresivo calidad 78. Dimensiones originales compartidas: **1448 × 1086**; anchos **480, 768, 1280 y 1448 px**, sin ampliación, retoque ni recorte. `src/data/exterior.json` expone solo metadatos públicos; `docs/assets/exterior-catalog.json` conserva procedencia y hashes. Se renderizan con `ProjectImage.astro`, sin recomprimir los derivados.
+
+Medición de los tamaños mayores (bytes, no métricas de velocidad):
+
+| Foto   | PNG original |    AVIF |    WebP |    JPEG |
+| ------ | -----------: | ------: | ------: | ------: |
+| Before |    2 569 807 |  99 514 | 187 486 | 219 413 |
+| After  |    2 682 417 | 101 445 | 205 168 | 226 981 |
+
+AVIF reduce aproximadamente un 96 % frente a estos PNG y un 49 % frente a las nuevas variantes WebP. Se conserva WebP y JPEG como respaldo. El navegador descarga un solo formato y tamaño por foto.
+
+El comparador de Home conserva la proporción completa 4:3, sin zoom ni recortes, con control nativo de rango, teclado, tacto y foco visible. Sin JavaScript se muestran ambas fotos completas con sus etiquetas. `exterior-1` y `exterior-2` se presentan como Before/After por la indicación explícita del cliente; no se extrapola esa condición al resto del catálogo.
+
+Tras la auditoría visual, el hero usa primero `exterior-after` (eager/high) y otras cinco vistas de acabados seleccionadas en `src/config/presentation.ts`; `exterior-before` se reserva al comparador. Cross-fade GSAP de 1.2 s y pausas de 4 s, con una nueva foto cargada y decodificada cada vez. La base permanece opaca para evitar destellos negros; una imagen fallida se salta, el ciclo se pausa en pestañas ocultas y se revierte al salir. Sin JS permanece el exterior terminado. La van se conserva en About y los CTA correspondientes.
+
+### Uso de ProjectImage
 
 ```astro
 ---

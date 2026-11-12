@@ -1,16 +1,36 @@
 ---
+import ProjectImage from '@/components/ui/ProjectImage.astro';
 interface Props {
   heading: string;
   label: string;
+  image: string;
+  accent: string;
+  summary: string;
 }
-const { heading, label } = Astro.props;
+const { heading, label, image, accent, summary } = Astro.props;
+const prefix = heading.endsWith(accent)
+  ? heading.slice(0, -accent.length)
+  : heading;
 ---
 
 <header class="page-intro">
-  <p class="eyebrow page-breadcrumb">
-    <a href="/">Home</a>
-    <span aria-hidden="true">/</span>
-    <span>{label}</span>
-  </p>
-  <h1>{heading}</h1>
+  <div
+    class="page-intro-media image-frame"
+    aria-hidden="true"
+    data-photo-motion
+  >
+    <ProjectImage id={image} sizes="100vw" priority alt="" />
+  </div>
+  <div class="container page-intro-copy">
+    <p class="eyebrow page-breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">/</span>
+      <span>{label}</span>
+    </p>
+    <h1>
+      {prefix}
+      {heading.endsWith(accent) && <em>{accent}</em>}
+    </h1>
+    <p class="page-intro-summary">{summary}</p>
+  </div>
 </header>

@@ -1,0 +1,190 @@
+[
+  {
+    "id": "exterior-before",
+    "project": "two-story-exterior",
+    "name": "exterior-before-f6f5dddf",
+    "alt": "Two-story home before exterior painting, with light siding and worn fascia",
+    "width": 1448,
+    "height": 1086,
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "height": 360,
+        "bytes": 12308,
+        "src": "/images/projects/two-story-exterior/exterior-before-f6f5dddf-480w.avif"
+      },
+      {
+        "format": "webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 23930,
+        "src": "/images/projects/two-story-exterior/exterior-before-f6f5dddf-480w.webp"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "height": 360,
+        "bytes": 26367,
+        "src": "/images/projects/two-story-exterior/exterior-before-f6f5dddf-480w.jpg"
+      },
+      {
+        "format": "avif",
+        "width": 768,
+        "height": 576,
+        "bytes": 31442,
+        "src": "/images/projects/two-story-exterior/exterior-before-f6f5dddf-768w.avif"
+      },
+      {
+        "format": "webp",
+        "width": 768,
+        "height": 576,
+        "bytes": 59700,
+        "src": "/images/projects/two-story-exterior/exterior-before-f6f5dddf-768w.webp"
+      },
+      {
+        "format": "jpeg",
+        "width": 768,
+        "height": 576,
+        "bytes": 65575,
+        "src": "/images/projects/two-story-exterior/exterior-before-f6f5dddf-768w.jpg"
+      },
+      {
+        "format": "avif",
+        "width": 1280,
+        "height": 960,
+        "bytes": 80771,
+        "src": "/images/projects/two-story-exterior/exterior-before-f6f5dddf-1280w.avif"
+      },
+      {
+        "format": "webp",
+        "width": 1280,
+        "height": 960,
+        "bytes": 152168,
+        "src": "/images/projects/two-story-exterior/exterior-before-f6f5dddf-1280w.webp"
+      },
+      {
+        "format": "jpeg",
+        "width": 1280,
+        "height": 960,
+        "bytes": 175560,
+        "src": "/images/projects/two-story-exterior/exterior-before-f6f5dddf-1280w.jpg"
+      },
+      {
+        "format": "avif",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 99514,
+        "src": "/images/projects/two-story-exterior/exterior-before-f6f5dddf-1448w.avif"
+      },
+      {
+        "format": "webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 187486,
+        "src": "/images/projects/two-story-exterior/exterior-before-f6f5dddf-1448w.webp"
+      },
+      {
+        "format": "jpeg",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 219413,
+        "src": "/images/projects/two-story-exterior/exterior-before-f6f5dddf-1448w.jpg"
+      }
+    ]
+  },
+  {
+    "id": "exterior-after",
+    "project": "two-story-exterior",
+    "name": "exterior-after-8283fd7e",
+    "alt": "The same two-story home after exterior painting, with dark siding and trim",
+    "width": 1448,
+    "height": 1086,
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "height": 360,
+        "bytes": 13218,
+        "src": "/images/projects/two-story-exterior/exterior-after-8283fd7e-480w.avif"
+      },
+      {
+        "format": "webp",
+        "width": 480,
+        "height": 360,
+        "bytes": 24692,
+        "src": "/images/projects/two-story-exterior/exterior-after-8283fd7e-480w.webp"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "height": 360,
+        "bytes": 27950,
+        "src": "/images/projects/two-story-exterior/exterior-after-8283fd7e-480w.jpg"
+      },
+      {
+        "format": "avif",
+        "width": 768,
+        "height": 576,
+        "bytes": 32763,
+        "src": "/images/projects/two-story-exterior/exterior-after-8283fd7e-768w.avif"
+      },
+      {
+        "format": "webp",
+        "width": 768,
+        "height": 576,
+        "bytes": 63504,
+        "src": "/images/projects/two-story-exterior/exterior-after-8283fd7e-768w.webp"
+      },
+      {
+        "format": "jpeg",
+        "width": 768,
+        "height": 576,
+        "bytes": 68638,
+        "src": "/images/projects/two-story-exterior/exterior-after-8283fd7e-768w.jpg"
+      },
+      {
+        "format": "avif",
+        "width": 1280,
+        "height": 960,
+        "bytes": 82295,
+        "src": "/images/projects/two-story-exterior/exterior-after-8283fd7e-1280w.avif"
+      },
+      {
+        "format": "webp",
+        "width": 1280,
+        "height": 960,
+        "bytes": 165810,
+        "src": "/images/projects/two-story-exterior/exterior-after-8283fd7e-1280w.webp"
+      },
+      {
+        "format": "jpeg",
+        "width": 1280,
+        "height": 960,
+        "bytes": 182202,
+        "src": "/images/projects/two-story-exterior/exterior-after-8283fd7e-1280w.jpg"
+      },
+      {
+        "format": "avif",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 101445,
+        "src": "/images/projects/two-story-exterior/exterior-after-8283fd7e-1448w.avif"
+      },
+      {
+        "format": "webp",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 205168,
+        "src": "/images/projects/two-story-exterior/exterior-after-8283fd7e-1448w.webp"
+      },
+      {
+        "format": "jpeg",
+        "width": 1448,
+        "height": 1086,
+        "bytes": 226981,
+        "src": "/images/projects/two-story-exterior/exterior-after-8283fd7e-1448w.jpg"
+      }
+    ]
+  }
+]

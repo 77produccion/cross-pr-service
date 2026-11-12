@@ -7,6 +7,7 @@ import FinalCTA from './FinalCTA.astro';
 import PageIntro from './PageIntro.astro';
 import { site } from '@/config/site';
 import { ctaPhotos } from '@/config/projects';
+import { pageIntros } from '@/config/presentation';
 
 interface Props {
   id: string;
@@ -15,30 +16,36 @@ const entry = await getEntry('pages', Astro.props.id);
 if (!entry) throw new Error(`Missing page content: ${Astro.props.id}`);
 const { Content } = await render(entry);
 const ctaImage = ctaPhotos[Astro.props.id];
+const intro = pageIntros[Astro.props.id];
 ---
 
 <BaseLayout
   title={entry.data.title}
   description={entry.data.description}
-  page={Astro.props.id === 'home' ? 'home-c' : Astro.props.id}
+  page={Astro.props.id}
 >
   {Astro.props.id === 'home' ? (
     <Home>
       <Content />
     </Home>
   ) : (
-    <Container class={`page-content page-${Astro.props.id}`}>
+    <div class={`page-content page-${Astro.props.id}`}>
       <PageIntro
         heading={entry.data.heading}
+        image={intro!.image}
+        accent={intro!.accent}
+        summary={intro!.summary}
         label={
           site.navigation.find((item) => item.href === Astro.url.pathname)
             ?.label ?? entry.data.title
         }
       />
-      <div class="prose">
-        <Content />
-      </div>
-      {ctaImage && <FinalCTA image={ctaImage} />}
-    </Container>
+      <Container class="page-body">
+        <div class="prose">
+          <Content />
+        </div>
+        {ctaImage && <FinalCTA image={ctaImage} />}
+      </Container>
+    </div>
   )}
 </BaseLayout>

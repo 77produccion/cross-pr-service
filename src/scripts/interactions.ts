@@ -1,12 +1,16 @@
 /** Native links/dialog stay usable without an animation dependency. */
 import { initGalleries } from './gallery';
+import { initComparisons } from './comparison';
 
 let cleanupHeader: (() => void) | undefined;
 let cleanupShowcases: (() => void)[] = [];
+let cleanupRequests: (() => void)[] = [];
 let whatsappTimer: number | undefined;
 let whatsappCollapseTimer: number | undefined;
 
 function initInteractions() {
+  cleanupRequests.forEach((dispose) => dispose());
+  cleanupRequests = [];
   window.clearTimeout(whatsappTimer);
   window.clearTimeout(whatsappCollapseTimer);
   const whatsapp = document.querySelector<HTMLElement>('.whatsapp-button');
@@ -145,17 +149,78 @@ function initInteractions() {
       });
     });
   initGalleries();
-  const form = document.querySelector<HTMLFormElement>('.contact-form');
-  // Defence in depth: this preview has no endpoint and never transmits personal data.
-  form?.addEventListener('submit', (event) => event.preventDefault());
+  initComparisons();
   const service = new URLSearchParams(window.location.search).get('service');
-  const select = form?.querySelector<HTMLSelectElement>('[name="projectType"]');
-  if (
-    select &&
-    service &&
-    Array.from(select.options).some((option) => option.value === service)
-  )
-    select.value = service;
+  document
+    .querySelectorAll<HTMLFormElement>('[data-estimate-form]')
+    .forEach((form) => {
+      const select = form.querySelector<HTMLSelectElement>(
+        '[name="projectType"]',
+      );
+      const button = form.querySelector<HTMLButtonElement>('[type="submit"]');
+      if (
+        select &&
+        service &&
+        Array.from(select.options).some((option) => option.value === service)
+      )
+        select.value = service;
+      const onSubmit = (event: SubmitEvent) => {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+        const data = new FormData(form);
+        const text = `Hi Cross Pro! I'd like an estimate.\nName: ${data.get('name')}\nPhone: ${data.get('phone')}\nEmail: ${data.get('email')}\nService: ${select?.selectedOptions[0]?.textContent ?? 'Other'}\nLocation: ${data.get('location') || '-'}\nDetails: ${data.get('message') || '-'}`;
+        // Navigate synchronously so no popup blocker or simulated delivery is involved.
+        window.location.assign(
+          `https://wa.me/${form.dataset.whatsappNumber}?text=${encodeURIComponent(text)}`,
+        );
+      };
+      form.addEventListener('submit', onSubmit);
+      if (button) button.disabled = false;
+      cleanupRequests.push(() => {
+        form.removeEventListener('submit', onSubmit);
+        if (button) button.disabled = true;
+      });
+    });
+  document
+    .querySelectorAll<HTMLElement>('[data-project-carousel]')
+    .forEach((carousel) => {
+      const track = carousel.querySelector<HTMLElement>('[data-project-track]');
+      const prev = carousel.querySelector<HTMLButtonElement>(
+        '[data-carousel-prev]',
+      );
+      const next = carousel.querySelector<HTMLButtonElement>(
+        '[data-carousel-next]',
+      );
+      const controls =
+        carousel.querySelector<HTMLElement>('.carousel-controls');
+      if (!track || !prev || !next || !controls) return;
+      const update = () => {
+        prev.disabled = track.scrollLeft <= 2;
+        next.disabled =
+          track.scrollLeft >= track.scrollWidth - track.clientWidth - 2;
+      };
+      const step = () =>
+        (track.firstElementChild?.getBoundingClientRect().width ??
+          track.clientWidth) + 18;
+      const backward = () =>
+        track.scrollBy({ left: -step(), behavior: 'smooth' });
+      const forward = () =>
+        track.scrollBy({ left: step(), behavior: 'smooth' });
+      controls.hidden = false;
+      prev.addEventListener('click', backward);
+      next.addEventListener('click', forward);
+      track.addEventListener('scroll', update, { passive: true });
+      const observer = new ResizeObserver(update);
+      observer.observe(track);
+      update();
+      cleanupRequests.push(() => {
+        prev.removeEventListener('click', backward);
+        next.removeEventListener('click', forward);
+        track.removeEventListener('scroll', update);
+        observer.disconnect();
+        controls.hidden = true;
+      });
+    });
 }
 initInteractions();
 document.addEventListener('astro:page-load', initInteractions);
@@ -165,4 +230,6 @@ document.addEventListener('astro:before-swap', () => {
   cleanupHeader?.();
   cleanupShowcases.forEach((cleanup) => cleanup());
   cleanupShowcases = [];
+  cleanupRequests.forEach((cleanup) => cleanup());
+  cleanupRequests = [];
 });

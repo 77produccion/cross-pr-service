@@ -13,6 +13,7 @@ const visible = compact ? [services[0], services[1], services[5]] : services;
     <article class="service-card" id={service.id} data-reveal>
       <a
         class="service-image image-frame"
+        data-photo-motion
         href={
           compact
             ? `/services/#${service.id}`

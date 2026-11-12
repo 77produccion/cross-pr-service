@@ -1,67 +1,65 @@
 ---
 import ProjectImage from '@/components/ui/ProjectImage.astro';
 import { services } from '@/config/projects';
-const visible = [services[0], services[1], services[5]];
+const visible = [
+  {
+    ...services[0],
+    description:
+      'Interior painting for living spaces, bedrooms, kitchens and offices.',
+  },
+  {
+    ...services[1],
+    description: 'Refresh your property’s exterior with a new paint finish.',
+  },
+  {
+    ...services[5],
+    title: 'Remodeling',
+    image: services[3].image,
+    alt: services[3].alt,
+    description:
+      'Remodeling for homes and businesses. Contact us to discuss your project.',
+  },
+];
 ---
 
-<section class="services-c" id="services" data-service-stage>
-  <div class="container services-c-head" data-reveal>
-    <div>
-      <p class="kicker-c">Services</p>
-      <h2>What we do</h2>
+<section class="home-services" id="services">
+  <div class="container">
+    <div class="section-heading" data-reveal>
+      <div>
+        <p class="overline">What we do</p>
+        <h2>
+          Painting &amp; <em>remodeling.</em>
+        </h2>
+      </div>
+      <p>
+        Interior and exterior painting, drywall, cabinet projects and exterior
+        wood repairs for residential and commercial properties.
+      </p>
     </div>
-    <p>
-      From interior and exterior painting to drywall, cabinet projects and
-      exterior wood repairs.
-    </p>
-  </div>
-  <div class="container services-c-body">
-    <div class="services-c-media">
-      {visible.map((service, index) => (
-        <div
-          class:list={[
-            'services-c-image',
-            'image-frame',
-            { 'is-active': index === 0 },
-          ]}
-          data-service-image={index}
-        >
-          <ProjectImage
-            id={service.image}
-            alt={service.alt}
-            sizes="(max-width: 850px) 100vw, 45vw"
-          />
-        </div>
-      ))}
-      <span class="services-c-caption" data-service-caption>
-        {visible[0]!.title}
-      </span>
-    </div>
-    <div class="services-c-list">
-      {visible.map((service, index) => (
-        <article
-          class:list={['services-c-item', { 'is-active': index === 0 }]}
-          data-service-item={index}
-        >
-          <div class="services-c-card-media image-frame">
+    <div class="home-service-grid">
+      {visible.map((service) => (
+        <article class="home-service" data-reveal>
+          <div class="image-frame" data-photo-motion>
             <ProjectImage
               id={service.image}
               alt={service.alt}
-              sizes="(max-width: 900px) 90vw, 1px"
+              sizes="(max-width: 980px) 100vw, 33vw"
             />
           </div>
-          <h3>{service.title}</h3>
-          <p>{service.description}</p>
-          <a class="text-link" href={`/contact/?service=${service.id}`}>
-            Request an estimate
-          </a>
+          <div class="home-service-copy">
+            <h3 class="home-service-title">{service.title}</h3>
+            <p class="home-service-description">{service.description}</p>
+            <a class="text-link" href={`/contact/?service=${service.id}`}>
+              Request an estimate <span aria-hidden="true">→</span>
+            </a>
+          </div>
         </article>
       ))}
     </div>
-  </div>
-  <div class="container services-c-foot">
-    <a class="text-link" href="/services/">
-      View all services
-    </a>
+    <div class="section-more" data-reveal>
+      <a class="button button-secondary" href="/services/">
+        View all services <span aria-hidden="true">→</span>
+      </a>
+    </div>
   </div>
 </section>

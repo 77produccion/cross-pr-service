@@ -34,6 +34,7 @@ const visible = compact ? projects.slice(0, 3) : projects;
       >
         <a
           class="image-frame"
+          data-photo-motion
           href={getPhotoSource(project.image)}
           data-project-image
           data-project={project.id}
@@ -48,7 +49,6 @@ const visible = compact ? projects.slice(0, 3) : projects;
         <figcaption>
           <h3>{project.title}</h3>
           <span>{project.category}</span>
-          <p class="project-description">{project.description}</p>
           <span class="project-photo-count">
             {project.images.length}{' '}
             {project.images.length === 1 ? 'photo' : 'photos'}

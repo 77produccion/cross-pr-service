@@ -33,7 +33,10 @@ const routes = ['/', '/services/', '/about-us/', '/our-work/', '/contact/'];
 test('WhatsApp label disappears after five seconds leaving a circular link', async ({
   page,
 }) => {
-  await page.clock.install();
+  const start = new Date('2026-11-11T12:00:00Z');
+  await page.clock.install({ time: start });
+  // Freeze before navigation: photo decoding must not advance this timer test.
+  await page.clock.pauseAt(start);
   await page.goto('/');
   const link = page.locator('.whatsapp-button');
   await expect(link.locator('span')).toBeVisible();
@@ -165,14 +168,15 @@ test('hero photograph fills its frame without hiding the heading', async ({
 }) => {
   await page.goto('/');
   await expect(page.locator('h1')).toBeVisible();
-  const hero = page
-    .locator('.hero-a-media, .hero-b-media, .hero-c-media')
-    .first();
+  const hero = page.locator('.hero-media').first();
   const frame = await hero.boundingBox();
   const image = await hero.locator('img').first().boundingBox();
   expect(frame).not.toBeNull();
   expect(image).not.toBeNull();
-  expect(Math.abs(frame!.height - image!.height)).toBeLessThan(2);
+  // The proposal includes a subtle 1.04 → 1 hero zoom inside a clipped frame.
+  expect(image!.height).toBeGreaterThanOrEqual(frame!.height - 2);
+  expect(image!.height).toBeLessThan(frame!.height * 1.05);
+  await expect(hero).toHaveCSS('overflow', 'hidden');
 });
 
 test('reduced motion leaves content visible', async ({ page }) => {
@@ -207,7 +211,7 @@ test('gallery filters and photo viewer work with keyboard', async ({
   );
 });
 
-test('contact is an honest non-submitting preview with selected service', async ({
+test('contact prepares an honest WhatsApp request with the selected service', async ({
   page,
 }) => {
   await page.goto('/services/');
@@ -216,12 +220,25 @@ test('contact is an honest non-submitting preview with selected service', async 
     .getByRole('link', { name: 'Request an Estimate', exact: true })
     .click();
   await expect(page.getByLabel('Project Type')).toHaveValue('cabinets');
-  await expect(
-    page.getByRole('button', { name: 'Send My Request' }),
-  ).toBeDisabled();
-  await expect(page.locator('#form-status')).toContainText(
-    'No information is sent or saved',
-  );
+  const form = page.locator('[data-estimate-form]');
+  await expect(form).toContainText('this form does not send or save a request');
+  await page.getByLabel('Full Name').fill('Test Customer');
+  await page.getByLabel('Phone Number').fill('5125550100');
+  await page.getByLabel('Email Address').fill('test@example.com');
+  await page.getByLabel('Project Location').fill('Austin');
+  await page.getByLabel('Tell Us About Your Project').fill('Kitchen & trim');
+  let destination = '';
+  await page.route('https://wa.me/**', async (route) => {
+    destination = route.request().url();
+    await route.fulfill({ contentType: 'text/html', body: 'WhatsApp handoff' });
+  });
+  await page.getByRole('button', { name: 'Continue on WhatsApp' }).click();
+  await expect.poll(() => destination).not.toBe('');
+  const url = new URL(destination);
+  expect(url.pathname).toBe('/15129179901');
+  expect(url.searchParams.get('text')).toContain('Test Customer');
+  expect(url.searchParams.get('text')).toContain('Cabinet Projects');
+  expect(url.searchParams.get('text')).toContain('Kitchen & trim');
 });
 
 test('service index jumps to a service without creating extra routes', async ({
@@ -335,46 +352,34 @@ test('brand leads the tab title and the footer uses the official logo', async ({
     background: getComputedStyle(footer).backgroundColor,
     text: getComputedStyle(footer).color,
   }));
-  expect(colors.background).toBe('rgb(27, 29, 25)');
+  expect(colors.background).toBe('rgb(11, 12, 11)');
   expect(colors.text).not.toBe(colors.background);
 });
 
-test('hero fills the right edge and cycles photographs without location labels', async ({
+test('hero uses a full-bleed finished project and a visible location heading', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
-  await expect(page.locator('.hero-c .kicker-c, .hero-c-vertical')).toHaveCount(
-    0,
+  const media = page.locator('.hero-media');
+  await expect(media.locator('picture').first()).toHaveAttribute(
+    'data-photo-id',
+    'exterior-after',
   );
-  const slides = page.locator('[data-hero-slide]');
-  await expect(slides).toHaveCount(7);
-  await expect(slides.first().locator('picture')).toHaveAttribute(
-    'data-company-photo',
-    'van',
-  );
-  await expect(slides.first().locator('img')).toHaveAttribute(
+  await expect(media.locator('img').first()).toHaveAttribute(
     'loading',
     'eager',
   );
-  await expect(slides.first().locator('img')).toHaveAttribute(
+  await expect(media.locator('img').first()).toHaveAttribute(
     'fetchpriority',
     'high',
   );
-  const hero = await page.locator('.hero-c').boundingBox();
-  const media = await page.locator('.hero-c-media').boundingBox();
-  expect(Math.abs(hero!.height - media!.height)).toBeLessThan(2);
-  expect(Math.abs(media!.x + media!.width - 1440)).toBeLessThan(2);
-  await expect
-    .poll(
-      () =>
-        slides
-          .nth(1)
-          .evaluate((slide) => Number(getComputedStyle(slide).opacity)),
-      { timeout: 10000 },
-    )
-    .toBeGreaterThan(0.9);
-  await expect(page.locator('h1')).toBeVisible();
+  const hero = await page.locator('.hero').boundingBox();
+  const frame = await media.boundingBox();
+  expect(Math.abs(hero!.height - frame!.height)).toBeLessThan(2);
+  expect(frame!.width).toBe(1440);
+  await expect(page.locator('h1')).toContainText('San Antonio.');
+  await expect(page.locator('h1')).toHaveCSS('font-family', /Playfair Display/);
 });
 
 test('mobile menu opens, closes with Escape and navigates', async ({
@@ -387,7 +392,7 @@ test('mobile menu opens, closes with Escape and navigates', async ({
   await expect(page.getByRole('navigation')).not.toBeVisible();
   const buttonBox = await toggle.boundingBox();
   const logoBox = await page.locator('.brand').boundingBox();
-  expect(buttonBox!.x).toBeLessThan(logoBox!.x);
+  expect(buttonBox!.x).toBeGreaterThan(logoBox!.x);
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-expanded', 'true');
   await expect(page.getByRole('navigation')).toBeVisible();
@@ -402,91 +407,82 @@ test('mobile menu opens, closes with Escape and navigates', async ({
   await expect(page).toHaveURL(/\/services\/$/);
 });
 
-test('mobile hero is compact and each service keeps its own photograph', async ({
+test('mobile proposal hero and service cards retain real photographs', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
-  const hero = await page.locator('.hero-c').boundingBox();
-  expect(hero!.height).toBeLessThan(700);
-  const items = page.locator('[data-service-item]');
+  const hero = await page.locator('.hero').boundingBox();
+  expect(hero!.height).toBeGreaterThanOrEqual(844);
+  const items = page.locator('.home-service');
   await expect(items).toHaveCount(3);
   for (const item of await items.all()) {
     await item.scrollIntoViewIfNeeded();
-    const image = item.locator('.services-c-card-media img');
+    const image = item.locator('.image-frame img');
     await expect(image).toBeVisible();
     await expect
       .poll(() => image.evaluate((img: HTMLImageElement) => img.naturalWidth))
       .toBeGreaterThan(0);
     const photoBox = await image.boundingBox();
     const titleBox = await item.locator('h3').boundingBox();
-    expect(photoBox!.y + photoBox!.height).toBeLessThan(titleBox!.y);
+    expect(titleBox!.y).toBeGreaterThan(photoBox!.y);
+    expect(titleBox!.y).toBeLessThan(photoBox!.y + photoBox!.height);
   }
 });
 
-test('desktop project strip aligns photos and keeps captions in the pinned viewport', async ({
-  page,
-}, testInfo) => {
-  test.skip(
-    testInfo.project.name === 'mobile',
-    'Pinning requires a desktop pointer.',
-  );
-  await page.setViewportSize({ width: 1920, height: 900 });
-  await page.goto('/');
-  const viewport = page.locator('[data-work-viewport]');
-  await expect(viewport).toHaveClass(/is-pinned/);
-  const top = await viewport.evaluate(
-    (element) => element.getBoundingClientRect().top + window.scrollY,
-  );
-  await page.evaluate((y) => window.scrollTo(0, y), top);
-  await expect
-    .poll(async () => (await viewport.boundingBox())!.y)
-    .toBeLessThan(120);
-  const cards = await page.locator('.work-c-item .image-frame').all();
-  const boxes = await Promise.all(cards.map((card) => card.boundingBox()));
-  for (const box of boxes)
-    expect(Math.abs(box!.y - boxes[0]!.y)).toBeLessThan(2);
-  for (const caption of await page.locator('.work-c-item figcaption').all()) {
-    const box = await caption.boundingBox();
-    expect(box!.y + box!.height).toBeLessThan(900);
-  }
-});
-
-test('interior thumbnails switch the main photograph smoothly with mouse and keyboard', async ({
+test('project carousel uses native horizontal scroll, buttons and no pinned section', async ({
   page,
 }) => {
   await page.goto('/');
-  const showcase = page.locator('[data-photo-switcher]');
-  const links = showcase.locator('[data-showcase-select]');
-  const photos = showcase.locator('[data-showcase-photo]');
-  await expect(links).toHaveCount(2);
-  await links.nth(1).click();
-  await expect(links.nth(1)).toHaveAttribute('aria-current', 'true');
-  await expect(photos.nth(1)).toHaveClass(/is-active/);
-  await expect(photos.nth(0)).toHaveAttribute('aria-hidden', 'true');
+  const track = page.locator('[data-project-track]');
+  await expect(page.locator('.pin-spacer')).toHaveCount(0);
+  await expect(
+    page.getByRole('button', { name: 'Previous projects' }),
+  ).toBeDisabled();
+  await page.getByRole('button', { name: 'Next projects' }).click();
   await expect
-    .poll(() =>
-      photos
-        .nth(1)
-        .evaluate((photo) => Number(getComputedStyle(photo).opacity)),
-    )
-    .toBeGreaterThan(0.99);
-  await links.nth(0).focus();
-  await page.keyboard.press('Enter');
-  await expect(photos.nth(0)).toHaveClass(/is-active/);
-  await expect(showcase.getByRole('status')).toContainText('Photo 1 of 2');
-  await expect(page).toHaveURL(/\/$/);
+    .poll(() => track.evaluate((el) => el.scrollLeft))
+    .toBeGreaterThan(200);
+  await page.getByRole('button', { name: 'Previous projects' }).click();
+  await expect
+    .poll(() => track.evaluate((el) => el.scrollLeft))
+    .toBeLessThan(2);
+  await track.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect
+    .poll(() => track.evaluate((el) => el.scrollLeft))
+    .toBeGreaterThan(0);
 });
 
-test('interior thumbnails remain real image links without JavaScript', async ({
+test('comparison and company photo remain useful without JavaScript', async ({
   browser,
 }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto('/');
-  await page.locator('[data-showcase-select]').nth(1).click();
-  await expect(page).toHaveURL(
-    /\/images\/projects\/geometric-fireplace\/cps-001-.+\.webp$/,
+  await expect(page.locator('.about-media picture')).toHaveAttribute(
+    'data-company-photo',
+    'van',
+  );
+  await expect(page.getByRole('slider')).toHaveCount(0);
+  const comparison = page.locator('[data-comparison]');
+  await expect(comparison.locator('figure')).toHaveCount(2);
+  for (const photo of await comparison.locator('picture img').all()) {
+    await photo.scrollIntoViewIfNeeded();
+    await expect(photo).toBeVisible();
+    await expect
+      .poll(() =>
+        photo.evaluate((image: HTMLImageElement) => image.naturalWidth),
+      )
+      .toBeGreaterThan(0);
+  }
+  await expect(page.locator('.hero h1')).toBeVisible();
+  await expect(
+    page.locator('.contact-form button[type="submit"]'),
+  ).toBeDisabled();
+  await expect(page.locator('.contact-form .form-direct')).toHaveAttribute(
+    'href',
+    /https:\/\/wa.me\//,
   );
   await context.close();
 });
@@ -498,7 +494,7 @@ test('photographic CTA zooms on hover and keeps its contact link', async ({
     testInfo.project.name === 'mobile',
     'Hover is a desktop enhancement.',
   );
-  await page.goto('/');
+  await page.goto('/services/');
   const banner = page.locator('.final-cta-photo');
   await banner.scrollIntoViewIfNeeded();
   const image = banner.locator('img');
@@ -521,7 +517,6 @@ test('shared photographic CTA uses the chosen company or project image on each a
   page,
 }) => {
   const banners = [
-    ['/', 'company-van'],
     ['/services/', 'cps-022'],
     ['/about-us/', 'company-van'],
     ['/our-work/', 'cps-036'],
@@ -544,8 +539,11 @@ test('shared photographic CTA uses the chosen company or project image on each a
       ),
     ).toBe('column');
   }
-  await page.goto('/contact/');
-  await expect(page.locator('.final-cta-photo')).toHaveCount(0);
+  for (const route of ['/', '/contact/']) {
+    await page.goto(route);
+    await expect(page.locator('.final-cta-photo')).toHaveCount(0);
+    await expect(page.locator('[data-estimate-form]')).toHaveCount(1);
+  }
 });
 
 test('project viewer uses responsive WebP, project thumbnails and an icon-only close button', async ({
@@ -591,7 +589,7 @@ test('Home selected work opens the same project gallery instead of unrelated pho
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
-  await page.locator('.work-c-item [data-project-image]').first().click();
+  await page.locator('.home-project [data-project-image]').first().click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
   await expect(dialog.locator('[data-project-title]')).toHaveText(
@@ -737,22 +735,22 @@ test('every corrected fixed photo is published once and no older asset URL is us
   for (const route of routes) {
     await page.goto(route);
     for (const image of await page
-      .locator('main picture[data-photo-id] img')
+      .locator('main picture[data-photo-id^="cps-"] img')
       .all()) {
-      await expect(image).toHaveAttribute(
-        'src',
-        /-fixed-[a-f0-9]{8}-\d+w\.jpg$/,
-      );
+      const source =
+        (await image.getAttribute('src')) ??
+        (await image.getAttribute('data-src'));
+      expect(source).toMatch(/-fixed-[a-f0-9]{8}-\d+w\.jpg$/);
     }
   }
 });
 
-test('company van uses responsive WebP in the first hero slide and the Home CTA', async ({
+test('finished exterior hero uses responsive AVIF with WebP fallback and priority', async ({
   page,
 }) => {
   await page.goto('/');
-  const first = page.locator('[data-hero-slide]').first().locator('picture');
-  await expect(first).toHaveAttribute('data-company-photo', 'van');
+  const first = page.locator('.hero-media picture').first();
+  await expect(first).toHaveAttribute('data-photo-id', 'exterior-after');
   await expect(first.locator('source[type="image/webp"]')).toHaveAttribute(
     'srcset',
     /480w/,
@@ -761,18 +759,10 @@ test('company van uses responsive WebP in the first hero slide and the Home CTA'
   await expect(first.locator('img')).toHaveAttribute('fetchpriority', 'high');
   await expect(first.locator('img')).toHaveAttribute(
     'alt',
-    /Cross Pro Services work van/,
+    /after exterior painting/,
   );
   const source = await first
     .locator('img')
     .evaluate((image: HTMLImageElement) => image.currentSrc);
-  expect(source).toMatch(/\/_astro\/.+\.webp$/);
-  const banner = page.locator('.final-cta-photo');
-  await banner.scrollIntoViewIfNeeded();
-  await expect(banner.locator('picture')).toHaveAttribute(
-    'data-company-photo',
-    'van',
-  );
-  await expect(banner.locator('img')).toHaveAttribute('loading', 'lazy');
-  await expect(banner.locator('img')).toHaveAttribute('alt', '');
+  expect(source).toMatch(/\/exterior-after-.+\.avif$/);
 });

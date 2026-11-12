@@ -5,25 +5,48 @@ import ProjectLightbox from './ProjectLightbox.astro';
 const visible = projects.slice(0, 5);
 ---
 
-<section class="work-c" data-gallery>
-  <div class="container work-c-head" data-reveal>
-    <div>
-      <p class="kicker-c">Selected work</p>
-      <h2>Recent projects</h2>
+<section class="home-work" id="work" data-gallery data-project-carousel>
+  <div class="container">
+    <div class="section-heading" data-reveal>
+      <div>
+        <p class="overline dark">Our work</p>
+        <h2>Recent projects.</h2>
+        <p class="lead">
+          A selection of painting and remodeling work across Central Texas.
+        </p>
+      </div>
+      <div class="carousel-controls" hidden>
+        <button
+          type="button"
+          data-carousel-prev
+          aria-label="Previous projects"
+          aria-controls="project-track"
+        >
+          ←
+        </button>
+        <button
+          type="button"
+          data-carousel-next
+          aria-label="Next projects"
+          aria-controls="project-track"
+        >
+          →
+        </button>
+      </div>
     </div>
-    <div>
-      <p>A selection of painting and remodeling work across Central Texas.</p>
-      <a class="text-link" href="/our-work/">
-        View all projects
-      </a>
-    </div>
-  </div>
-  <div class="work-c-viewport" data-work-viewport>
-    <div class="work-c-track" data-work-track>
-      {visible.map((project, index) => (
-        <figure class={`work-c-item work-c-item-${index + 1}`}>
+    <div
+      class="project-track"
+      id="project-track"
+      tabindex="0"
+      role="region"
+      aria-label="Recent projects"
+      data-project-track
+    >
+      {visible.map((project) => (
+        <figure class="home-project">
           <a
             class="image-frame"
+            data-photo-motion
             href={`/our-work/#${project.id}`}
             data-project-image
             data-project={project.id}
@@ -32,21 +55,20 @@ const visible = projects.slice(0, 5);
             <ProjectImage
               id={project.image}
               alt={project.alt}
-              sizes="(max-width: 850px) 85vw, 34vw"
+              sizes="(max-width: 760px) 82vw, 420px"
             />
           </a>
           <figcaption>
-            <span>{project.title}</span>
-            <span>{project.category}</span>
+            <small>{project.category}</small>
+            <b>{project.title}</b>
           </figcaption>
         </figure>
       ))}
-      <div class="work-c-end">
-        <p>More painting and remodeling projects across Central Texas.</p>
-        <a class="button" href="/our-work/">
-          View all projects
-        </a>
-      </div>
+    </div>
+    <div class="section-more" data-reveal>
+      <a class="button button-outline" href="/our-work/">
+        View all projects <span aria-hidden="true">→</span>
+      </a>
     </div>
   </div>
   <ProjectLightbox projects={visible} />

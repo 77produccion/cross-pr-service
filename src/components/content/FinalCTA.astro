@@ -9,7 +9,7 @@ const { image } = Astro.props;
 ---
 
 <section class="final-cta final-cta-photo" data-reveal>
-  <div class="final-cta-media image-frame" aria-hidden="true">
+  <div class="final-cta-media image-frame" aria-hidden="true" data-photo-motion>
     {image === 'company-van' ? (
       <CompanyVanImage sizes="(max-width: 900px) 90vw, 86rem" alt="" />
     ) : (

@@ -1,6 +1,7 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
-import photos from '@/data/photos.json';
+import projectPhotos from '@/data/photos.json';
+import exteriorPhotos from '@/data/exterior.json';
 
 interface Props {
   id: string;
@@ -8,13 +9,25 @@ interface Props {
   sizes: string;
   alt?: string;
   priority?: boolean;
+  /** Secondary hero frames are hydrated one at a time. */
+  deferred?: boolean;
   class?: HTMLAttributes<'picture'>['class'];
 }
 
-const { id, sizes, alt, priority = false, class: className } = Astro.props;
-const photo = photos.find((image) => image.id === id);
+const {
+  id,
+  sizes,
+  alt,
+  priority = false,
+  deferred = false,
+  class: className,
+} = Astro.props;
+const photo = [...projectPhotos, ...exteriorPhotos].find(
+  (image) => image.id === id,
+);
 if (!photo) throw new Error(`Unknown photo ID: ${id}`);
 const webp = photo.variants.filter((variant) => variant.format === 'webp');
+const avif = photo.variants.filter((variant) => variant.format === 'avif');
 const jpeg = photo.variants.filter((variant) => variant.format === 'jpeg');
 const fallback = jpeg.at(-1)!;
 const srcset = (variants: typeof photo.variants) =>
@@ -22,10 +35,25 @@ const srcset = (variants: typeof photo.variants) =>
 ---
 
 <picture class={className} data-photo-id={id}>
-  <source type="image/webp" srcset={srcset(webp)} sizes={sizes} />
+  {avif.length > 0 && (
+    <source
+      type="image/avif"
+      srcset={deferred ? undefined : srcset(avif)}
+      data-srcset={deferred ? srcset(avif) : undefined}
+      sizes={sizes}
+    />
+  )}
+  <source
+    type="image/webp"
+    srcset={deferred ? undefined : srcset(webp)}
+    data-srcset={deferred ? srcset(webp) : undefined}
+    sizes={sizes}
+  />
   <img
-    src={fallback.src}
-    srcset={srcset(jpeg)}
+    src={deferred ? undefined : fallback.src}
+    data-src={deferred ? fallback.src : undefined}
+    srcset={deferred ? undefined : srcset(jpeg)}
+    data-srcset={deferred ? srcset(jpeg) : undefined}
     sizes={sizes}
     width={photo.width}
     height={photo.height}

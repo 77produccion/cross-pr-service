@@ -1,104 +1,118 @@
 ---
 import ProjectImage from '@/components/ui/ProjectImage.astro';
 import CompanyVanImage from '@/components/ui/CompanyVanImage.astro';
-import Action from '@/components/ui/Action.astro';
 import HomeServices from './HomeServices.astro';
 import HomeWork from './HomeWork.astro';
-import FinalCTA from './FinalCTA.astro';
-import ProjectShowcase from './ProjectShowcase.astro';
-import { interiorDetails, ctaPhotos } from '@/config/projects';
-const heroPhotos = [
-  'company-van',
-  'cps-007',
-  'cps-024',
-  'cps-022',
-  'cps-017',
-  'cps-042',
-  'cps-002',
-];
+import EstimateForm from './EstimateForm.astro';
+import BeforeAfter from './BeforeAfter.astro';
+import { heroPhotos } from '@/config/presentation';
 ---
 
-<section class="hero-c">
-  <div class="hero-c-media image-frame">
-    {heroPhotos.map((id, index) => (
+<section class="hero" id="top">
+  <div class="hero-media image-frame">
+    {heroPhotos.map((photo, index) => (
       <div
-        class:list={['hero-c-slide', { 'is-first': index === 0 }]}
+        class:list={['hero-slide', { 'is-first': index === 0 }]}
+        style={`--photo-position: ${photo.position}`}
         data-hero-slide
-        aria-hidden={index !== 0 ? 'true' : undefined}
+        aria-hidden={index > 0 ? 'true' : undefined}
       >
-        {id === 'company-van' ? (
-          <CompanyVanImage
-            sizes="(max-width: 900px) 100vw, 65vw"
-            priority={index === 0}
-          />
-        ) : (
-          <ProjectImage
-            id={id}
-            sizes="(max-width: 900px) 100vw, 65vw"
-            priority={index === 0}
-          />
-        )}
+        <ProjectImage
+          id={photo.id}
+          sizes="100vw"
+          priority={index === 0}
+          deferred={index > 0}
+          {...(index > 0 ? { alt: '' } : {})}
+        />
       </div>
     ))}
   </div>
-  <div class="hero-c-panel">
-    <h1>
-      Painting <em>&amp;</em>
-      <br />
-      remodeling
-      <span class="sr-only"> in Austin &amp; San Antonio</span>
-    </h1>
-    <p class="hero-c-lede">
-      <slot />
-    </p>
-    <div class="hero-c-actions">
-      <Action />
-      <a class="hero-c-link" href="/our-work/">
-        See our work
-      </a>
+  <div class="container">
+    <div class="hero-copy">
+      <p class="overline">Painting &amp; Remodeling · Central Texas</p>
+      <h1>
+        Painting &amp; remodeling
+        <br />
+        in Austin &amp;
+        <br />
+        <em>San Antonio.</em>
+      </h1>
+      <div class="hero-text">
+        <slot />
+      </div>
+      <div class="actions">
+        <a href="#contact" class="button">
+          Request an Estimate <span aria-hidden="true">→</span>
+        </a>
+        <a href="/our-work/" class="button button-secondary">
+          See our work <span aria-hidden="true">→</span>
+        </a>
+      </div>
     </div>
   </div>
 </section>
 <HomeServices />
-<section class="about-c">
-  <ProjectShowcase images={interiorDetails} id="home-interior-photo">
-    <p class="kicker-c">About Cross Pro</p>
-    <h2>Ten years of considered work.</h2>
-    <p>
-      With more than 10 years of experience, Cross Pro Services is committed to
-      delivering professional results and work that exceeds our clients’
-      expectations.
-    </p>
-    <ul class="about-c-list">
-      <li>Residential &amp; commercial</li>
-      <li>Painting &amp; remodeling</li>
-      <li>Serving Central Texas</li>
-    </ul>
-    <Action href="/about-us/" label="More about us" secondary />
-  </ProjectShowcase>
-</section>
-<HomeWork />
-<section class="area-c">
-  <div class="container area-c-grid">
-    <p class="kicker-c area-c-label">Service area</p>
-    <div class="area-c-content">
+<BeforeAfter />
+<section class="about" id="about">
+  <div class="container about-grid">
+    <div class="about-media image-frame" data-reveal data-photo-motion>
+      <CompanyVanImage sizes="(max-width: 980px) 100vw, 560px" />
+    </div>
+    <div data-reveal>
+      <p class="overline dark">About Cross Pro</p>
       <h2>
-        Central Texas,
-        <br />
-        close to home.
+        More than a decade <em>of experience.</em>
       </h2>
-      <p>
-        Painting and remodeling for homes and businesses across the Austin and
-        San Antonio metros.
+      <p class="lead">
+        Led by owner Maurilio Jiménez, Cross Pro Services brings over 10 years
+        of experience in painting and remodeling for homes and businesses.
       </p>
-      <div class="area-c-links">
-        <a href="/contact/">Austin</a>
-        <a href="/contact/">San Antonio</a>
-      </div>
-      <p class="area-c-note">And surrounding communities.</p>
+      <a href="/about-us/" class="button button-outline">
+        More about us <span aria-hidden="true">→</span>
+      </a>
     </div>
   </div>
 </section>
-<div class="container">
-  <FinalCTA image={ctaPhotos['home']!} />
-</div>
+<HomeWork />
+<section class="area" id="area">
+  <div class="container area-grid">
+    <div data-reveal>
+      <p class="overline">Service area</p>
+      <h2>
+        Central Texas,
+        <br />
+        <em>close to home.</em>
+      </h2>
+      <p class="lead">
+        Serving Austin, San Antonio and surrounding communities.
+      </p>
+    </div>
+    <div class="cities" data-reveal>
+      <a class="city" href="/contact/">
+        <b>Austin</b>
+        <span>Get a quote →</span>
+      </a>
+      <a class="city" href="/contact/">
+        <b>San Antonio</b>
+        <span>Get a quote →</span>
+      </a>
+    </div>
+  </div>
+</section>
+<section class="estimate-section" id="contact">
+  <div class="container estimate-grid">
+    <div data-reveal>
+      <p class="overline">Request an estimate</p>
+      <h2>
+        Ready to start
+        <br />
+        your <em>project?</em>
+      </h2>
+      <p class="lead">
+        Share your project details and location. Our team will help you discuss
+        the next steps.
+      </p>
+    </div>
+    <EstimateForm />
+  </div>
+</section>

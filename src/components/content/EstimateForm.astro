@@ -1,0 +1,100 @@
+---
+import { services } from '@/config/projects';
+import { site, whatsappHref } from '@/config/site';
+interface Props {
+  id?: string;
+}
+const { id = 'estimate' } = Astro.props;
+---
+
+<form
+  class="contact-form"
+  data-estimate-form
+  data-whatsapp-number={site.whatsapp.number}
+  aria-describedby={`${id}-status`}
+  data-reveal
+>
+  <div>
+    <h3>Request an Estimate</h3>
+    <p class="form-intro">
+      Share your project details with our team on WhatsApp.
+    </p>
+  </div>
+  <div class="form-row">
+    <label>
+      Full Name <span aria-hidden="true">*</span>
+      <input name="name" autocomplete="name" required maxlength="120" />
+    </label>
+    <label>
+      Phone Number <span aria-hidden="true">*</span>
+      <input
+        type="tel"
+        name="phone"
+        autocomplete="tel"
+        required
+        maxlength="40"
+      />
+    </label>
+  </div>
+  <label>
+    Email Address <span aria-hidden="true">*</span>
+    <input
+      type="email"
+      name="email"
+      autocomplete="email"
+      required
+      maxlength="180"
+    />
+  </label>
+  <div class="form-row">
+    <label>
+      Project Type
+      <select name="projectType">
+        <option value="">Select a service</option>
+        {services.map((service) => (
+          <option value={service.id}>{service.title}</option>
+        ))}
+        <option value="other">Other</option>
+      </select>
+    </label>
+    <label>
+      Project Location
+      <input
+        name="location"
+        autocomplete="address-level2"
+        placeholder="City or ZIP code"
+        maxlength="160"
+      />
+    </label>
+  </div>
+  <label>
+    Tell Us About Your Project
+    <textarea
+      name="message"
+      rows="3"
+      maxlength="3000"
+      placeholder="Rooms, project scope, timeline…"
+    ></textarea>
+  </label>
+  <button class="button estimate-submit" type="submit" disabled>
+    Continue on WhatsApp <span aria-hidden="true">→</span>
+  </button>
+  <p class="form-status" id={`${id}-status`}>
+    This opens WhatsApp with your details. Review and send your message there;
+    this form does not send or save a request.
+  </p>
+  <a
+    class="form-direct"
+    href={whatsappHref}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Chat on WhatsApp: {site.whatsapp.displayNumber}
+    <span class="sr-only"> (opens in a new tab)</span>
+  </a>
+  <noscript>
+    <p class="form-status">
+      Use the WhatsApp link above to contact our team without JavaScript.
+    </p>
+  </noscript>
+</form>

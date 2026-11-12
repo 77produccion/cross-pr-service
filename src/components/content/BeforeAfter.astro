@@ -1,0 +1,55 @@
+---
+import ProjectImage from '@/components/ui/ProjectImage.astro';
+---
+
+<section class="transformation" aria-labelledby="transformation-title">
+  <div class="container">
+    <div class="transformation-heading" data-reveal>
+      <p class="overline">The transformation</p>
+      <h2 id="transformation-title">
+        Exterior painting.
+        <br />
+        <em>Before &amp; after.</em>
+      </h2>
+      <p class="comparison-instructions" id="comparison-help" hidden>
+        Drag the handle or use the arrow keys to compare before and after.
+      </p>
+    </div>
+    <div class="comparison" data-comparison data-reveal>
+      <figure class="comparison-photo comparison-after">
+        <ProjectImage
+          id="exterior-after"
+          sizes="(max-width: 1076px) calc(100vw - 36px), 1040px"
+        />
+        <figcaption>After</figcaption>
+      </figure>
+      <figure class="comparison-photo comparison-before">
+        <ProjectImage
+          id="exterior-before"
+          sizes="(max-width: 1076px) calc(100vw - 36px), 1040px"
+        />
+        <figcaption>Before</figcaption>
+      </figure>
+      <div class="comparison-handle" aria-hidden="true" hidden>
+        <span>◀ ▶</span>
+      </div>
+      <input
+        class="comparison-range"
+        type="range"
+        min="0"
+        max="100"
+        value="50"
+        step="1"
+        aria-label="Compare exterior painting before and after"
+        aria-describedby="comparison-help"
+        aria-valuetext="50% before, 50% after"
+        hidden
+      />
+    </div>
+    <div class="section-more" data-reveal>
+      <a href="/our-work/#two-story-exterior" class="button button-secondary">
+        Explore this project <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>
