@@ -76,13 +76,13 @@ test('mobile comparison accepts touch without causing horizontal page overflow',
   ).toBe(true);
 });
 
-test('hero cross-fades through all six curated finished photos and returns to its opaque base', async ({
+test('hero cross-fades through the finished photos and company van and returns to its opaque base', async ({
   page,
 }) => {
   test.setTimeout(65000);
   await page.goto('/');
   const slides = page.locator('[data-hero-slide]');
-  await expect(slides).toHaveCount(heroPhotos.length);
+  await expect(slides).toHaveCount(heroPhotos.length + 1);
   for (const [index, photo] of heroPhotos.entries()) {
     const slide = slides.nth(index);
     await expect(slide.locator('picture')).toHaveAttribute(
@@ -101,6 +101,19 @@ test('hero cross-fades through all six curated finished photos and returns to it
     await expect(page.locator('h1')).toBeVisible();
     await expect(slides.first()).toHaveCSS('opacity', '1');
   }
+  const van = slides.last();
+  await expect(van.locator('picture')).toHaveAttribute(
+    'data-company-photo',
+    'van',
+  );
+  await expect
+    .poll(
+      () =>
+        van.evaluate((element) => Number(getComputedStyle(element).opacity)),
+      { timeout: 18000 },
+    )
+    .toBeGreaterThan(0.99);
+  await expect(van.locator('img')).toHaveJSProperty('complete', true);
   await expect
     .poll(
       () =>

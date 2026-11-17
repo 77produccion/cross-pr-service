@@ -37,7 +37,6 @@
   --gold: #bc9a61;
   --gold-light: #dcc088;
   --gold-dark: #8f7040;
-  --green: #2f4a3e;
   --muted: #6a6a62;
   --muted-dark: #aeada5;
   --line: #d9d5ca;
@@ -290,13 +289,13 @@ h3 em {
   flex: none;
 }
 .brand img {
-  height: 52px;
+  height: 68px;
   width: auto;
   mix-blend-mode: lighten;
   transition: height 0.3s;
 }
 .is-scrolled .brand img {
-  height: 42px;
+  height: 56px;
 }
 .menu-toggle {
   display: none;
@@ -352,6 +351,8 @@ h3 em {
 .hero-media {
   position: absolute;
   inset: 0;
+  /* Keep every carousel frame below the permanent contrast overlay. */
+  z-index: 0;
 }
 .hero-slide {
   position: absolute;
@@ -532,7 +533,7 @@ h3 em {
 }
 .hero-text {
   max-width: 500px;
-  color: #d6d5cf;
+  color: #f3f0e8;
   font-size: 17px;
   line-height: 1.75;
 }
@@ -763,7 +764,7 @@ h3 em {
   margin-top: 6px;
 }
 .area {
-  background: var(--green);
+  background: var(--ink2);
   color: #fff;
   padding: 110px 0;
   position: relative;
@@ -778,7 +779,7 @@ h3 em {
   position: relative;
 }
 .area .lead {
-  color: #cfdcd5;
+  color: var(--paper);
 }
 .cities {
   display: grid;
@@ -1482,7 +1483,7 @@ body:has(dialog[open]) {
   }
   .brand img,
   .is-scrolled .brand img {
-    height: 42px;
+    height: 52px;
   }
   #main-navigation {
     order: 3;

@@ -12,6 +12,8 @@ Las cinco páginas adoptan la línea visual de `cross-pro-web-linea-propuesta/in
 
 Las ocho skills instaladas son documentación, no ocho paquetes JavaScript enviados al navegador.
 
+El carrusel de Home incluye también la van de la empresa como séptima vista, con carga diferida hasta su turno. Las fotos quedan en un contexto de apilamiento propio por debajo del degradado permanente: el fade no desaparece cuando GSAP cambia el `z-index` de una vista. Service area usa el carbón de la paleta, con acentos dorados; el logo del header aumenta tanto en escritorio como en móvil.
+
 ## Objetivos a medir sobre el diseño final
 
 - LCP ≤ 2.5 s, CLS ≤ 0.1, INP ≤ 200 ms como objetivos de Core Web Vitals, no resultados garantizados.

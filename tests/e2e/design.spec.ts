@@ -103,7 +103,7 @@ test('Home removes decorative repetition and does not download the entire hero w
     page.locator('.marquee, .trust, .hero-foot, .steps, .experience-badge'),
   ).toHaveCount(0);
   const slides = page.locator('[data-hero-slide]');
-  await expect(slides).toHaveCount(6);
+  await expect(slides).toHaveCount(heroPhotos.length + 1);
   expect(
     heroPhotos.some(
       (photo) => photo.id.includes('before') || photo.id.includes('van'),
@@ -113,10 +113,48 @@ test('Home removes decorative repetition and does not download the entire hero w
     'src',
     /exterior-after/,
   );
-  for (const slide of await slides.all().then((items) => items.slice(1))) {
+  for (const slide of await slides.all().then((items) => items.slice(1, -1))) {
     await expect(slide.locator('img')).not.toHaveAttribute('src');
     await expect(slide.locator('img')).toHaveAttribute('data-src', /fixed-/);
   }
+  const van = slides.last().locator('[data-company-photo="van"] img');
+  await expect(van).not.toHaveAttribute('src');
+  await expect(van).toHaveAttribute('data-src', /cross-pro-services-van/);
   await expect(page.locator('.hero h1')).toBeVisible();
   await context.close();
+});
+
+test('Home keeps the contrast fade above every carousel frame and uses brand colors', async ({
+  page,
+}, testInfo) => {
+  await page.goto('/');
+  await expect(page.locator('.hero-media')).toHaveCSS('z-index', '0');
+  expect(
+    await page
+      .locator('.hero')
+      .evaluate((hero) => getComputedStyle(hero, '::before').zIndex),
+  ).toBe('1');
+  await expect(page.locator('.hero-copy')).toHaveCSS('z-index', '2');
+  await expect(page.locator('.hero-text')).toHaveCSS(
+    'color',
+    'rgb(243, 240, 232)',
+  );
+  await expect(page.locator('.area')).toHaveCSS(
+    'background-color',
+    'rgb(29, 32, 29)',
+  );
+  await expect(page.locator('.brand img')).toHaveCSS(
+    'height',
+    testInfo.project.name === 'mobile' ? '52px' : '68px',
+  );
+  await page.locator('.area').scrollIntoViewIfNeeded();
+  await expect(page.locator('.brand img')).toHaveCSS(
+    'height',
+    testInfo.project.name === 'mobile' ? '52px' : '56px',
+  );
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
 });
