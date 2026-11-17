@@ -17,7 +17,7 @@ Las ocho skills instaladas son documentación, no ocho paquetes JavaScript envia
 - LCP ≤ 2.5 s, CLS ≤ 0.1, INP ≤ 200 ms como objetivos de Core Web Vitals, no resultados garantizados.
 - Medir Lighthouse móvil en producción y comprobar en dispositivo real de gama media.
 - Servir WebP responsive con respaldo JPEG; evaluar AVIF si una medición posterior justifica más variantes. No servir los originales del cliente directamente.
-- Playfair Display y DM Sans se sirven como WOFF2 locales con `font-display: swap`; no se carga Google Fonts en runtime. Las fuentes de direcciones anteriores se conservan pero no se solicitan.
+- Cormorant Garamond (normal e itálica, 400–600) y Manrope (400–700) se sirven como WOFF2 locales con `font-display: swap`; no se carga Google Fonts en runtime. La serif usa tracking moderado y tamaños ajustados a su altura visual; las fuentes de direcciones anteriores se conservan pero no se solicitan.
 - Revisar tamaño comprimido de JS/CSS tras cada incorporación importante.
 
 ## Pendientes de publicación

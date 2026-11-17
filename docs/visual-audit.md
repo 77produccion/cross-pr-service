@@ -25,6 +25,10 @@ La primera imagen exterior se sirve eager/high; las otras cinco tienen fuentes d
 
 ## Internas
 
+### Tipografía editorial
+
+La combinación vigente es Cormorant Garamond para títulos y acentos en itálica real, con Manrope en lectura, navegación y controles. Se mantiene la paleta y la composición; se ajustan escala y tracking a la nueva serif, sin sintetizar pesos o cursivas. Las fuentes son WOFF2 locales con `font-display: swap`; Playfair Display y DM Sans se conservan como referencia, pero ya no se cargan. Las pruebas verifican la carga real de ambos estilos, ausencia de peticiones a Google Fonts y encaje tras cargar fuentes en las cinco rutas.
+
 - Services, About, Our Work y Contact pasan a fondos carbón, texto crema, acentos dorados y cabeceras fotográficas propias con títulos serif. Ya no son páginas claras con una franja oscura aislada.
 - Las introducciones se concentran en la cabecera, evitando repetirlas inmediatamente debajo en MDX.
 - Services conserva los seis servicios, anclas y CTA; índice sin caja beige y bloques fotográficos separados por líneas discretas.
