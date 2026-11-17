@@ -379,10 +379,7 @@ test('hero uses a full-bleed finished project and a visible location heading', a
   expect(Math.abs(hero!.height - frame!.height)).toBeLessThan(2);
   expect(frame!.width).toBe(1440);
   await expect(page.locator('h1')).toContainText('San Antonio.');
-  await expect(page.locator('h1')).toHaveCSS(
-    'font-family',
-    /Cormorant Garamond/,
-  );
+  await expect(page.locator('h1')).toHaveCSS('font-family', /Poppins/);
 });
 
 test('mobile menu opens, closes with Escape and navigates', async ({

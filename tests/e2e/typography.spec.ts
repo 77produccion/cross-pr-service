@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('editorial typefaces load locally with real serif italics and legible sans-serif controls', async ({
+test('Poppins loads locally for headings, text and controls with upright gold accents', async ({
   page,
 }) => {
   const externalFonts: string[] = [];
@@ -9,22 +9,19 @@ test('editorial typefaces load locally with real serif italics and legible sans-
       externalFonts.push(request.url());
   });
   await page.goto('/');
-  await expect(page.locator('h1')).toHaveCSS(
-    'font-family',
-    /Cormorant Garamond/,
-  );
-  await expect(page.locator('h1 em')).toHaveCSS('font-style', 'italic');
-  await expect(page.locator('body')).toHaveCSS('font-family', /Manrope/);
+  await expect(page.locator('h1')).toHaveCSS('font-family', /Poppins/);
+  await expect(page.locator('h1 em')).toHaveCSS('font-style', 'normal');
+  await expect(page.locator('body')).toHaveCSS('font-family', /Poppins/);
   await expect(page.locator('.contact-form input').first()).toHaveCSS(
     'font-family',
-    /Manrope/,
+    /Poppins/,
   );
   const loaded = await page.evaluate(async () => {
     const faces = await Promise.all([
-      document.fonts.load('500 64px "Cormorant Garamond"'),
-      document.fonts.load('italic 500 64px "Cormorant Garamond"'),
-      document.fonts.load('400 16px "Manrope"'),
-      document.fonts.load('700 12px "Manrope"'),
+      document.fonts.load('400 16px "Poppins"'),
+      document.fonts.load('500 32px "Poppins"'),
+      document.fonts.load('600 64px "Poppins"'),
+      document.fonts.load('700 12px "Poppins"'),
     ]);
     return faces.every(
       (group) =>
@@ -49,6 +46,7 @@ test('new typography fits all five pages after fonts finish loading', async ({
     await page.evaluate(() => document.fonts.ready);
     const heading = page.locator('h1');
     await expect(heading).toBeVisible();
+    await expect(heading).toHaveCSS('font-family', /Poppins/);
     const box = (await heading.boundingBox())!;
     const viewport = page.viewportSize()!;
     expect(box.x).toBeGreaterThanOrEqual(0);

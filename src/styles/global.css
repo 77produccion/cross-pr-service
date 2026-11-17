@@ -1,23 +1,29 @@
 @font-face {
-  font-family: 'Manrope';
-  src: url('../assets/fonts/manrope-latin.woff2') format('woff2');
-  font-weight: 400 700;
+  font-family: 'Poppins';
+  src: url('../assets/fonts/poppins-400-latin.woff2') format('woff2');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Cormorant Garamond';
-  src: url('../assets/fonts/cormorant-garamond-latin.woff2') format('woff2');
-  font-weight: 400 600;
+  font-family: 'Poppins';
+  src: url('../assets/fonts/poppins-500-latin.woff2') format('woff2');
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Cormorant Garamond';
-  src: url('../assets/fonts/cormorant-garamond-italic-latin.woff2')
-    format('woff2');
-  font-weight: 400 600;
-  font-style: italic;
+  font-family: 'Poppins';
+  src: url('../assets/fonts/poppins-600-latin.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Poppins';
+  src: url('../assets/fonts/poppins-700-latin.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
   font-display: swap;
 }
 
@@ -35,8 +41,8 @@
   --muted: #6a6a62;
   --muted-dark: #aeada5;
   --line: #d9d5ca;
-  --serif: 'Cormorant Garamond', Georgia, serif;
-  --sans: 'Manrope', Arial, sans-serif;
+  --heading: 'Poppins', 'Segoe UI', Arial, sans-serif;
+  --sans: 'Poppins', 'Segoe UI', Arial, sans-serif;
   --gutter: 32px;
   --container-width: 1200px;
 }
@@ -103,27 +109,35 @@ main:focus {
 h1,
 h2,
 h3 {
-  font-family: var(--serif);
+  font-family: var(--heading);
   font-weight: 500;
 }
 h1 {
-  font-size: clamp(50px, 7.4vw, 98px);
-  line-height: 0.98;
-  letter-spacing: -0.025em;
+  font-size: clamp(40px, 6vw, 76px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
 }
 h2 {
-  font-size: clamp(38px, 5vw, 64px);
-  line-height: 1.06;
-  letter-spacing: -0.025em;
+  font-size: clamp(30px, 3.6vw, 48px);
+  line-height: 1.18;
+  letter-spacing: -0.035em;
   margin: 16px 0;
 }
 h2 em {
   color: var(--gold-dark);
 }
 h3 {
-  font-size: 34px;
-  font-weight: 600;
-  line-height: 1.1;
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+h1 em,
+h2 em,
+h3 em {
+  font-style: normal;
+  font-weight: inherit;
 }
 .container {
   width: min(var(--container-width), calc(100% - var(--gutter) * 2));
@@ -511,7 +525,7 @@ h3 {
 }
 .hero h1 {
   margin: 24px 0;
-  font-size: clamp(52px, 6.5vw, 94px);
+  font-size: clamp(40px, 5.3vw, 76px);
 }
 .hero h1 em {
   color: var(--gold-light);
@@ -745,7 +759,7 @@ h3 {
 }
 .home-project b {
   display: block;
-  font: 500 26px/1.15 var(--serif);
+  font: 500 22px/1.3 var(--heading);
   margin-top: 6px;
 }
 .area {
@@ -787,7 +801,7 @@ h3 {
   border-color: var(--gold-light);
 }
 .city b {
-  font: 500 30px var(--serif);
+  font: 500 26px var(--heading);
 }
 .city span {
   font-size: 10px;
@@ -820,7 +834,7 @@ h3 {
   gap: 16px;
 }
 .contact-form h3 {
-  font-size: 32px;
+  font-size: 26px;
   margin-bottom: 6px;
 }
 .form-intro {
@@ -938,9 +952,9 @@ body:not(.page-home) {
 }
 .page-intro h1 {
   max-width: 18ch;
-  font-size: clamp(46px, 5.8vw, 80px);
+  font-size: clamp(36px, 4.8vw, 64px);
   margin-top: 24px;
-  line-height: 1.08;
+  line-height: 1.14;
 }
 .page-intro h1 em {
   color: var(--gold-light);
@@ -1029,7 +1043,7 @@ body:not(.page-home) {
   padding-right: 24px;
 }
 .service-grid-full h2 {
-  font-size: clamp(32px, 3vw, 48px);
+  font-size: clamp(28px, 2.8vw, 38px);
   max-width: 20ch;
 }
 .service-card p {
@@ -1060,7 +1074,7 @@ body:not(.page-home) {
 }
 .about-feature h3 {
   margin-top: 32px;
-  font-size: 28px;
+  font-size: 24px;
 }
 .contact-grid {
   display: grid;
@@ -1083,7 +1097,7 @@ body:not(.page-home) {
   margin-top: 16px;
   border-bottom: 1px solid var(--line);
   padding-bottom: 11px;
-  font: 500 26px var(--serif);
+  font: 500 24px var(--heading);
 }
 .contact-coverage > small {
   display: block;
@@ -1160,7 +1174,7 @@ body:not(.page-home) {
   border-bottom: 1px solid var(--line);
 }
 .project-card h3 {
-  font-size: 30px;
+  font-size: 24px;
   flex-basis: 100%;
 }
 .project-card figcaption > span {

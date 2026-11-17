@@ -27,7 +27,7 @@ La primera imagen exterior se sirve eager/high; las otras cinco tienen fuentes d
 
 ### Tipografía editorial
 
-La combinación vigente es Cormorant Garamond para títulos y acentos en itálica real, con Manrope en lectura, navegación y controles. Se mantiene la paleta y la composición; se ajustan escala y tracking a la nueva serif, sin sintetizar pesos o cursivas. Las fuentes son WOFF2 locales con `font-display: swap`; Playfair Display y DM Sans se conservan como referencia, pero ya no se cargan. Las pruebas verifican la carga real de ambos estilos, ausencia de peticiones a Google Fonts y encaje tras cargar fuentes en las cinco rutas.
+Por petición posterior del cliente, Poppins sustituye a la combinación serif/sans en todo el sitio: 400 para lectura, 500 para subtítulos, 600 para titulares y 700 para etiquetas/CTA. Los acentos dorados pasan a redonda, sin cursiva, y se reduce la escala de los títulos para compensar su mayor altura visual. Se conservan paleta, fotos y animaciones. Los cuatro WOFF2 son locales con `font-display: swap`; las fuentes anteriores se conservan como referencia y no se cargan. Las pruebas verifican los cuatro pesos, ausencia de peticiones a Google Fonts y encaje tras cargar fuentes en las cinco rutas.
 
 - Services, About, Our Work y Contact pasan a fondos carbón, texto crema, acentos dorados y cabeceras fotográficas propias con títulos serif. Ya no son páginas claras con una franja oscura aislada.
 - Las introducciones se concentran en la cabecera, evitando repetirlas inmediatamente debajo en MDX.
