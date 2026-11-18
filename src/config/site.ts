@@ -19,3 +19,4 @@ export const site = {
 } as const;
 
 export const whatsappHref = `https://wa.me/${site.whatsapp.number}?text=${encodeURIComponent(site.whatsapp.message)}`;
+export const smsHref = `sms:+${site.whatsapp.number}`;

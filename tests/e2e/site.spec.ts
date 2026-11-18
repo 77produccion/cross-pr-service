@@ -30,15 +30,15 @@ const fixedPhotoIds = Object.keys(
 
 const routes = ['/', '/services/', '/about-us/', '/our-work/', '/contact/'];
 
-test('WhatsApp label disappears after five seconds leaving a circular link', async ({
+test('SMS label disappears after five seconds leaving a circular link', async ({
   page,
 }) => {
   const start = new Date('2026-11-11T12:00:00Z');
-  await page.clock.install({ time: start });
+  await page.clock.install({ time: new Date(start.getTime() - 60_000) });
   // Freeze before navigation: photo decoding must not advance this timer test.
   await page.clock.pauseAt(start);
   await page.goto('/');
-  const link = page.locator('.whatsapp-button');
+  const link = page.locator('.sms-button');
   await expect(link.locator('span')).toBeVisible();
   await page.clock.fastForward(4000);
   await expect(link.locator('span')).toBeVisible();
@@ -51,12 +51,10 @@ test('WhatsApp label disappears after five seconds leaving a circular link', asy
   const box = await link.boundingBox();
   expect(box!.width).toBe(56);
   expect(box!.height).toBe(56);
-  await expect(link).toHaveAccessibleName(
-    'Chat with Cross Pro Services on WhatsApp (opens in a new tab)',
-  );
+  await expect(link).toHaveAccessibleName('Text Cross Pro Services via SMS');
 });
 
-test('floating WhatsApp link works on every page without JavaScript', async ({
+test('floating SMS link works on every page without JavaScript', async ({
   browser,
 }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
@@ -66,14 +64,14 @@ test('floating WhatsApp link works on every page without JavaScript', async ({
     for (const route of routes) {
       await page.goto(route);
       const link = page.getByRole('link', {
-        name: 'Chat with Cross Pro Services on WhatsApp (opens in a new tab)',
+        name: 'Text Cross Pro Services via SMS',
       });
       await expect(link).toBeVisible();
-      await expect(link).toHaveAttribute('target', '_blank');
+      await expect(link).not.toHaveAttribute('target');
+      await expect(link).toHaveText('Text us');
       const url = new URL((await link.getAttribute('href'))!);
-      expect(url.origin).toBe('https://wa.me');
-      expect(url.pathname).toBe('/15129179901');
-      expect(url.searchParams.get('text')).toBe(site.whatsapp.message);
+      expect(url.protocol).toBe('sms:');
+      expect(url.pathname).toBe(`+${site.whatsapp.number}`);
       await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
       await expect(link).toBeInViewport();
       const box = await link.boundingBox();

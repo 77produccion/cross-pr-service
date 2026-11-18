@@ -5,31 +5,31 @@ import { initComparisons } from './comparison';
 let cleanupHeader: (() => void) | undefined;
 let cleanupShowcases: (() => void)[] = [];
 let cleanupRequests: (() => void)[] = [];
-let whatsappTimer: number | undefined;
-let whatsappCollapseTimer: number | undefined;
+let smsTimer: number | undefined;
+let smsCollapseTimer: number | undefined;
 
 function initInteractions() {
   cleanupRequests.forEach((dispose) => dispose());
   cleanupRequests = [];
-  window.clearTimeout(whatsappTimer);
-  window.clearTimeout(whatsappCollapseTimer);
-  const whatsapp = document.querySelector<HTMLElement>('.whatsapp-button');
-  if (whatsapp) {
-    whatsappTimer = window.setTimeout(() => {
-      const bounds = whatsapp.getBoundingClientRect();
-      const icon = whatsapp.querySelector('svg')?.getBoundingClientRect();
+  window.clearTimeout(smsTimer);
+  window.clearTimeout(smsCollapseTimer);
+  const sms = document.querySelector<HTMLElement>('.sms-button');
+  if (sms) {
+    smsTimer = window.setTimeout(() => {
+      const bounds = sms.getBoundingClientRect();
+      const icon = sms.querySelector('svg')?.getBoundingClientRect();
       const distance = bounds.width - 56;
-      whatsapp.style.setProperty('--collapse-distance', `${distance}px`);
-      whatsapp.style.setProperty(
+      sms.style.setProperty('--collapse-distance', `${distance}px`);
+      sms.style.setProperty(
         '--icon-shift',
         `${icon ? bounds.right - 28 - icon.width / 2 - icon.left : 0}px`,
       );
-      whatsapp.classList.add('is-collapsing');
-      whatsappCollapseTimer = window.setTimeout(() => {
-        whatsapp.classList.remove('is-collapsing');
-        whatsapp.classList.add('is-compact');
-        whatsapp.style.removeProperty('--collapse-distance');
-        whatsapp.style.removeProperty('--icon-shift');
+      sms.classList.add('is-collapsing');
+      smsCollapseTimer = window.setTimeout(() => {
+        sms.classList.remove('is-collapsing');
+        sms.classList.add('is-compact');
+        sms.style.removeProperty('--collapse-distance');
+        sms.style.removeProperty('--icon-shift');
       }, 450);
     }, 5000);
   }
@@ -225,8 +225,8 @@ function initInteractions() {
 initInteractions();
 document.addEventListener('astro:page-load', initInteractions);
 document.addEventListener('astro:before-swap', () => {
-  window.clearTimeout(whatsappTimer);
-  window.clearTimeout(whatsappCollapseTimer);
+  window.clearTimeout(smsTimer);
+  window.clearTimeout(smsCollapseTimer);
   cleanupHeader?.();
   cleanupShowcases.forEach((cleanup) => cleanup());
   cleanupShowcases = [];
